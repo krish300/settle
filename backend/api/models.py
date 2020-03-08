@@ -3,8 +3,8 @@ from django.db import models
 
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
-    last_modified = models.DateTimeField(auto_now=True, auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
 
@@ -12,8 +12,8 @@ class Product(models.Model):
     name = models.CharField(max_length=50, unique=True)
     category = models.ForeignKey(
         'ExpenseCategory', on_delete=models.SET_NULL, null=True)
-    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
-    last_modified = models.DateTimeField(auto_now=True, auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
 
@@ -21,15 +21,15 @@ class Bill(models.Model):
     name = models.CharField(max_length=50, unique=True)
     category = models.ForeignKey(
         'ExpenseCategory', on_delete=models.SET_NULL, null=True)
-    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
-    last_modified = models.DateTimeField(auto_now=True, auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
 
 class EntryCategory(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
-    last_modified = models.DateTimeField(auto_now=True, auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
 
@@ -47,7 +47,7 @@ class Entry(models.Model):
     )
     product = models.ForeignKey('Product', on_delete=models.PROTECT)
     bill = models.ForeignKey('Bill', on_delete=models.PROTECT)
-    person = models.ForeignKey('Person', on_delete=models.PROTECT)
+    # person = models.ForeignKey('Person', on_delete=models.PROTECT)
     category = models.ForeignKey(
         'EntryCategory', on_delete=models.PROTECT)
     type = models.CharField(
@@ -55,8 +55,8 @@ class Entry(models.Model):
     mode = models.CharField(
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=50)
-    last_modified = models.DateTimeField(auto_now=True, auto_now_add=False)
+    last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
