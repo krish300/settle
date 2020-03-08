@@ -1,12 +1,12 @@
 from django.db import models
 import uuid
 
+
 class EntityType(models.Model):
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-    
 
 
 class ExpenseCategory(models.Model):
@@ -14,6 +14,7 @@ class ExpenseCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+
 
 class Entity(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -48,7 +49,7 @@ class Entry(models.Model):
         ('AC', 'ACCOUNT'),
         ('TR', 'TREASURE')
     )
-    settlement = models.ForeignKey("Settlement",on_delete=models.CASCADE)
+    settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
     entity = models.ForeignKey('Entity', on_delete=models.PROTECT)
     category = models.ForeignKey(
         'EntryCategory', on_delete=models.PROTECT)
@@ -73,4 +74,3 @@ class Settlement(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
-    
