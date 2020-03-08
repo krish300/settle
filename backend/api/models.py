@@ -60,3 +60,15 @@ class Entry(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
+
+
+class Settlement(models.Model):
+    id = models.UUIDField()
+    name = models.CharField(max_length=100)
+    date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.CharField(max_length=50)
+    last_modified = models.DateTimeField(auto_now=True)
+    last_modified_by = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+    
