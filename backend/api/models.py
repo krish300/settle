@@ -45,6 +45,7 @@ class Entry(models.Model):
         ('AC', 'ACCOUNT'),
         ('TR', 'TREASURE')
     )
+    settlement = models.ForeignKey("Settlement",on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.PROTECT)
     bill = models.ForeignKey('Bill', on_delete=models.PROTECT)
     # person = models.ForeignKey('Person', on_delete=models.PROTECT)
@@ -63,9 +64,9 @@ class Entry(models.Model):
 
 
 class Settlement(models.Model):
-    id = models.UUIDField()
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
-    date = models.DateField()
+    date = models.DateField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=50)
     last_modified = models.DateTimeField(auto_now=True)
