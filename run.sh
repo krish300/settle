@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-pipenv run python backend/manage.py makemigrations
-pipenv run python backend/manage.py migrate
-pipenv run python backend/manage.py runserver
+cd backend
+pipenv run python manage.py makemigrations
+pipenv run python manage.py migrate
+pipenv run python manage.py runserver
