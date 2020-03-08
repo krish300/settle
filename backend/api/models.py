@@ -1,4 +1,5 @@
 from django.db import models
+
 import uuid
 
 
@@ -8,12 +9,18 @@ class EntityType(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
 
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Entity(models.Model):
@@ -28,6 +35,9 @@ class Entity(models.Model):
     last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
 
 class EntryCategory(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -35,6 +45,9 @@ class EntryCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Entry(models.Model):
@@ -74,3 +87,6 @@ class Settlement(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
