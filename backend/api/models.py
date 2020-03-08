@@ -1,4 +1,12 @@
 from django.db import models
+import uuid
+
+
+class EntityType(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
 
 
 class ExpenseCategory(models.Model):
@@ -8,26 +16,22 @@ class ExpenseCategory(models.Model):
     is_active = models.BooleanField(default=True)
 
 
-class Product(models.Model):
+class Entity(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    type = models.ForeignKey(
+        'EntityType', on_delete=models.PROTECT)
     category = models.ForeignKey(
         'ExpenseCategory', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.CharField(max_length=50)
     last_modified = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
-
-
-class Bill(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    category = models.ForeignKey(
-        'ExpenseCategory', on_delete=models.SET_NULL, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    last_modified = models.DateTimeField(auto_now=True)
+    last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
 
 
 class EntryCategory(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    entity_type = models.ForeignKey('EntityType',  on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -45,10 +49,8 @@ class Entry(models.Model):
         ('AC', 'ACCOUNT'),
         ('TR', 'TREASURE')
     )
-    settlement = models.ForeignKey("Settlement",on_delete=models.CASCADE)
-    product = models.ForeignKey('Product', on_delete=models.PROTECT)
-    bill = models.ForeignKey('Bill', on_delete=models.PROTECT)
-    # person = models.ForeignKey('Person', on_delete=models.PROTECT)
+    settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
+    entity = models.ForeignKey('Entity', on_delete=models.PROTECT)
     category = models.ForeignKey(
         'EntryCategory', on_delete=models.PROTECT)
     type = models.CharField(
@@ -72,4 +74,3 @@ class Settlement(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
-    
