@@ -20,3 +20,8 @@ class EntryCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = EntryCategory
         fields = ('name', 'entity_type')
+
+
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True, max_length=150)
+    password = serializers.CharField(required=True, max_length=256)

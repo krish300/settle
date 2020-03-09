@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Entity, EntityType, EntryCategory
@@ -10,6 +10,7 @@ class EntityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = EntitySerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['type', 'category']
+    permission_classes = (permissions.IsAuthenticated,)
 
 class EntityTypeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = EntityType.objects.all()
