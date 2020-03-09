@@ -1,17 +1,22 @@
 from rest_framework import serializers
-from .models import Entity, EntityType
+from .models import EntryCategory, Entity, EntityType
 
-class EntryCategorySerializer(serializers.ModelSerializer):
+
+class EntitySerializer(serializers.ModelSerializer):
+    expense_category = serializers.CharField(source='category')
+
     class Meta:
         model = Entity
-        fields = ('name', 'entity_type')
+        fields = ('name', 'type', 'expense_category', 'category')
+
 
 class EntityTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = EntityType
-        fields = ('name')
+        fields = ['name']
 
-class EntitySerializer(serializers.ModelSerializer):
+
+class EntryCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Entity
-        fields = ('name', 'type', 'category')
+        model = EntryCategory
+        fields = ('name', 'entity_type')
