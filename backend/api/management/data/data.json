@@ -1,4 +1,44 @@
 {
+    "EntityType": [
+        "PRODUCT",
+        "BILL",
+        "PERSON"
+    ],
+    "ExpenseCategory": [
+        "DONATION",
+        "LOCAL FOOD SUPPLY",
+        "VEGETABLES",
+        "TRANSPORTATION",
+        "KITCHEN SUPPLY",
+        "PACKAGING SUPPLY",
+        "CUTLERY SUPPLY",
+        "STAFF EXP",
+        "HOUSEKEEPING SUPPLY",
+        "HYGINE SUPPLY",
+        "OTHER EXP"
+    ],
+    "EntryCategory": [
+        [
+            "LOCAL PURCHASE",
+            "1"
+        ],
+        [
+            "BILL PAYMENT",
+            "2"
+        ],
+        [
+            "ADVANCE",
+            "3"
+        ],
+        [
+            "CASH HANDOVER",
+            "3"
+        ],
+        [
+            "EXEMPTED BILL",
+            "3"
+        ]
+    ],
     "Entity": [
         [
             "HIJRA",
