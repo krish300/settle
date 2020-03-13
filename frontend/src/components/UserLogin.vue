@@ -46,12 +46,13 @@
   </v-content>
 </template>
 <script>
+import router from '../router'
 export default {
   name: "UserLogin",
   methods: {
     login() {
       console.log(this.$refs.form.validate());
-      this.invalidUser = true;
+      this.invalidUser = false;
       console.log("inside for invalid usgtgrrtg");
       if (this.$refs.form.validate()) {
         console.log("inside for invalid user1");
@@ -64,6 +65,8 @@ export default {
           // display error message
           this.password = "";
           this.showError = true;
+        }else{
+          router.push({ path: "home" });
         }
       }
     },

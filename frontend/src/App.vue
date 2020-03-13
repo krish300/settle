@@ -1,45 +1,37 @@
 <template>
   <v-app>
     <div id="app">
-      <v-toolbar app>
-        <span class="hidden-sm-and-up">
-          <v-toolbar-side-icon @click="sidebar = !sidebar"></v-toolbar-side-icon>
-        </span>
-        <v-toolbar-title>Biggies</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items class="hidden-xs-only">
-          <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">{{ item.title }}</v-btn>
-        </v-toolbar-items>
-      </v-toolbar>
-
-      <router-view />
+      <router-view></router-view>
+      
+      
     </div>
-
-    <v-content>
-      <Login />
-    </v-content>
   </v-app>
 </template>
-
 <script>
 import HelloWorld from "./components/HelloWorld";
-import Login from "../src/views/Login";
-
+import router from "./router";
+import Home from "../src/views/Home.vue";
+import TopNavBar from "../src/views/NavigationBar.vue";
 export default {
   name: "App",
 
   components: {
     HelloWorld,
-    Login
+    Home,
+    TopNavBar
   },
-
-  data: () => ({
-    sidebar: false,
-    menuItems: [
-      { title: "Home", path: "/" },
-      { title: "About", path: "/about" },
-      { title: "Categories", path: "/categories" }
-    ]
-  })
+  data() {
+    return {
+      isLoggedIn: false
+    };
+  },
+  beforeCreate() {
+    this.isLoggedIn = false;
+    if (this.isLoggedIn) {
+      router.push({ path: "home" });
+    }else{
+      router.push({ path: "login" });
+    }
+  }
 };
 </script>

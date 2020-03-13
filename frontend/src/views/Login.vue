@@ -5,7 +5,7 @@
 // @ is an alias to /src
 import UserLogin from "@/components/UserLogin.vue";
 export default {
-  name: "Login",
+  name: "UserLogin",
   components: {
     UserLogin
   }

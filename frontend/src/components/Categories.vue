@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <TopNavBar></TopNavBar>
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-row class="text-center">
         <v-col cols="2">
@@ -56,6 +57,21 @@
             clearable
           ></v-text-field>
         </v-col>
+        <v-col cols="3" lg="6">
+          <v-menu v-model="dateMenu" :close-on-content-click="false" max-width="290">
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                :value="computedDateFormattedMomentjs"
+                clearable
+                label="Formatted with Moment.js"
+                readonly
+                v-on="on"
+                @click:clear="date = null"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="date" @change="dateMenu = false"></v-date-picker>
+          </v-menu>
+        </v-col>
         <v-col class="text-center" cols="2" sm="2">
           <div class="my-2">
             <v-btn large color="primary" v-on:click="addRow">Add</v-btn>
@@ -70,6 +86,10 @@
         <td class="text-xs-right">{{ props.item.entity }}</td>
         <td class="text-xs-right">{{ props.item.description }}</td>
         <td class="text-xs-right">{{ props.item.price }}</td>
+        <!-- <td class="text-xs-right"><v-icon small>test</v-icon></td> -->
+      </template>
+      <template>
+        <v-icon small>mdi-delete</v-icon>
       </template>
     </v-data-table>
     <v-row class="text-center"></v-row>
@@ -77,8 +97,13 @@
 </template>
 <script>
 import axios from "axios";
+import moment from "moment";
+import TopNavBar from "../views/NavigationBar.vue";
 export default {
   name: "Categories",
+  components: {
+    TopNavBar
+  },
   methods: {
     catgeorySelection(data) {
       this.cashOutRecord = {};
@@ -152,10 +177,13 @@ export default {
           align: "center",
           sortable: false
         },
-        { text: "Amount", value: "price", align: "center", sortable: false }
+        { text: "Amount", value: "price", align: "center", sortable: false },
+        { text: "Action", vlaue: "action", align: "center", sortable: false }
       ],
       cashOutRecord: {},
-      cashOutRecords: []
+      cashOutRecords: [],
+      date: new Date().toISOString().substr(0, 10),
+      dateMenu: false
     };
   },
   created() {
@@ -167,6 +195,14 @@ export default {
       .catch(error => {
         console.log("error while fetching entry-category");
       });
+  },
+  computed: {
+    computedDateFormattedMomentjs() {
+      return this.date ? moment(this.date).format("dddd, MMMM Do YYYY") : "";
+    },
+    computedDateFormattedDatefns() {
+      return this.date ? format(this.date, "dddd, MMMM Do YYYY") : "";
+    }
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <Categories></Categories>
+    <Categories></Categories>
 </template>
 <script>
 // @ is an alias to /src
