@@ -1,5 +1,5 @@
 from django.db import models
-
+from jsonfield import JSONField
 import uuid
 
 
@@ -82,6 +82,7 @@ class Settlement(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     date = models.DateField(null=True)
+    is_closed = models.BooleanField(default=False) 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=50)
     last_modified = models.DateTimeField(auto_now=True)
@@ -90,3 +91,17 @@ class Settlement(models.Model):
 
     def __str__(self):
         return self.name
+
+class SaleSummary(models.Model):
+    date = models.DateField(null=True)
+    data = JSONField(null=True)
+    sale = models.PositiveIntegerField(null=False, blank=False)
+    discount = models.PositiveIntegerField(null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.CharField(max_length=50)
+    last_modified = models.DateTimeField(auto_now=True)
+    last_modified_by = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"SaleSummary-{self.date}"

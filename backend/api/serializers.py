@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EntryCategory, Entity, EntityType
+from .models import EntryCategory, Entity, EntityType, Entry
 
 
 class EntitySerializer(serializers.ModelSerializer):
@@ -20,3 +20,10 @@ class EntryCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = EntryCategory
         fields = ('name', 'entity_type')
+
+class EntrySerializer(serializers.ModelSerializer):
+    expense_category = serializers.CharField(source='category')
+
+    class Meta:
+        model = Entry
+        fields = '__all__'

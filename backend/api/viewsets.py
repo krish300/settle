@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Entity, EntityType, EntryCategory
-from .serializers import EntitySerializer, EntityTypeSerializer, EntryCategorySerializer
+from .models import Entity, EntityType, EntryCategory, Entry
+from .serializers import EntitySerializer, EntityTypeSerializer, EntryCategorySerializer, EntrySerializer
 
 
 class EntityViewSet(viewsets.ReadOnlyModelViewSet):
@@ -19,3 +19,8 @@ class EntityTypeViewSet(viewsets.ReadOnlyModelViewSet):
 class EntryCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = EntryCategory.objects.all()
     serializer_class = EntryCategorySerializer
+
+
+class EntryViewSet(viewsets.ModelViewSet):
+    queryset = Entry.objects.all()
+    serializer_class = EntrySerializer
