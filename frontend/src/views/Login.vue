@@ -1,11 +1,17 @@
 <template>
-  <UserLogin></UserLogin>
+<v-app>
+  <div class="login">
+    <UserLogin />
+  </div>
+</v-app>
 </template>
+
 <script>
 // @ is an alias to /src
 import UserLogin from "@/components/UserLogin.vue";
+
 export default {
-  name: "UserLogin",
+  name: "Login",
   components: {
     UserLogin
   }

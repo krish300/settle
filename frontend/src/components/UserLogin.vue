@@ -3,7 +3,9 @@
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="4">
-          <v-alert type="error" dismissible v-if="showError">Invalid User Details</v-alert>
+          <v-alert type="error" dismissible v-if="showError"
+            >Invalid User Details</v-alert
+          >
           <v-card class="elevation-12">
             <v-toolbar color="primary" dark flat>
               <v-toolbar-title>User Login</v-toolbar-title>
@@ -19,8 +21,8 @@
                   v-model="userName"
                   :items="userNames"
                   :rules="[v => !!v || 'User Name is required']"
-                  v-on:change="userName"
-                  @click.native="showError=false"
+                  v-on:change="userNameChange"
+                  @click.native="showError = false"
                 ></v-autocomplete>
                 <v-text-field
                   :rules="[v => !!v || 'Password is required']"
@@ -31,7 +33,7 @@
                   type="password"
                   v-model="password"
                   clearable
-                  @click.native="showError=false"
+                  @click.native="showError = false"
                 />
               </v-form>
             </v-card-text>
@@ -46,30 +48,29 @@
   </v-content>
 </template>
 <script>
-import router from '../router'
+import router from "../router";
 export default {
   name: "UserLogin",
   methods: {
     login() {
-      console.log(this.$refs.form.validate());
-      this.invalidUser = false;
-      console.log("inside for invalid usgtgrrtg");
+      this.invalidUser = true;
       if (this.$refs.form.validate()) {
-        console.log("inside for invalid user1");
-        console.log("inside for invalid user1", this.invalidUser);
-
         // validate login
+        if (this.password == "1234"){
+          this.invalidUser = false;
+        }
         if (this.invalidUser) {
           console.log("inside for invalid user", this.invalidUser);
           // reset the form
           // display error message
           this.password = "";
           this.showError = true;
-        }else{
+        } else {
           router.push({ path: "home" });
         }
       }
     },
+    userNameChange(){},
     resetModel() {}
   },
   data() {

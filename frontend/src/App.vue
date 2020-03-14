@@ -1,37 +1,29 @@
 <template>
-  <v-app>
-    <div id="app">
-      <router-view></router-view>
-      
-      
-    </div>
-  </v-app>
+  <div id="app">
+    <div id="nav"></div>
+    <router-view />
+  </div>
 </template>
-<script>
-import HelloWorld from "./components/HelloWorld";
-import router from "./router";
-import Home from "../src/views/Home.vue";
-import TopNavBar from "../src/views/NavigationBar.vue";
-export default {
-  name: "App",
 
-  components: {
-    HelloWorld,
-    Home,
-    TopNavBar
-  },
-  data() {
-    return {
-      isLoggedIn: false
-    };
-  },
-  beforeCreate() {
-    this.isLoggedIn = false;
-    if (this.isLoggedIn) {
-      router.push({ path: "home" });
-    }else{
-      router.push({ path: "login" });
-    }
-  }
-};
-</script>
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
+}
+</style>
