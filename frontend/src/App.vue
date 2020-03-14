@@ -1,32 +1,43 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <v-app>
+    <div id="app">
+      <v-toolbar app>
+        <span class="hidden-sm-and-up">
+          <v-toolbar-side-icon @click="sidebar = !sidebar"></v-toolbar-side-icon>
+        </span>
+        <v-toolbar-title>Biggies</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items class="hidden-xs-only">
+          <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">{{ item.title }}</v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+
+      <router-view />
     </div>
-    <router-view/>
-  </div>
+
+    <v-content>
+      <HelloWorld />
+    </v-content>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import HelloWorld from "./components/HelloWorld";
 
-#nav {
-  padding: 30px;
-}
+export default {
+  name: "App",
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+  components: {
+    HelloWorld
+  },
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+  data: () => ({
+    sidebar: false,
+    menuItems: [
+      { title: "Home", path: "/" },
+      { title: "About", path: "/about" },
+      { title: "Categories", path: "/categories" }
+    ]
+  })
+};
+</script>
