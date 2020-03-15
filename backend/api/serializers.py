@@ -8,19 +8,19 @@ class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Entity
-        fields = ('name', 'type', 'expense_category', 'category')
+        fields = ('id', 'name', 'type', 'expense_category', 'category')
 
 
 class EntityTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.EntityType
-        fields = ('name',)
+        fields = ('id', 'name')
 
 
 class EntryCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.EntryCategory
-        fields = ('name', 'entity_type')
+        fields = ('id', 'name', 'entity_type')
 
 
 class EntrySerializer(serializers.ModelSerializer):
