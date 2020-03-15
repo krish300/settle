@@ -75,3 +75,11 @@ class SettlementAdmin(admin.ModelAdmin):
 @admin.register(models.SaleSummary)
 class SaleSummary(admin.ModelAdmin):
     pass
+
+@admin.register(models.PaymentModeCategory)
+class PaymentModeCategory(admin.ModelAdmin):
+    pass
+
+@admin.register(models.PaymentMode)
+class PaymentMode(admin.ModelAdmin):
+    pass

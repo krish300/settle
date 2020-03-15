@@ -1,6 +1,7 @@
 from django.db import models
 from jsonfield import JSONField
 import uuid
+from collections import OrderedDict
 
 
 class EntityType(models.Model):
@@ -30,9 +31,7 @@ class Entity(models.Model):
     category = models.ForeignKey(
         'ExpenseCategory', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    created_by = models.CharField(max_length=50)
     last_modified = models.DateTimeField(auto_now=True)
-    last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -72,36 +71,78 @@ class Entry(models.Model):
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    created_by = models.CharField(max_length=50)
+    created_by = models.CharField(max_length=50, null=True)
     last_modified = models.DateTimeField(auto_now=True)
-    last_modified_by = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
 
 
 class Settlement(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
-    date = models.DateField(null=True)
-    is_closed = models.BooleanField(default=False) 
+    date = models.DateField(unique=True)
+    is_closed = models.BooleanField(default=False)
+    closed_by = models.CharField(max_length=50, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    created_by = models.CharField(max_length=50)
-    last_modified = models.DateTimeField(auto_now=True)
-    last_modified_by = models.CharField(max_length=50)
+    last_modified = models.DateTimeField(auto_now=True)    
+    last_modified_by = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
 
+
+class CashDetails(models.Model):
+    date = models.DateField(unique=True)
+    opening_cash = models.PositiveIntegerField(null=False, blank=False)
+    closing_cash = models.PositiveIntegerField(null=False, blank=False)
+
+    def __str__(self):
+        return f"CashDetails-{self.date}"
+
+
 class SaleSummary(models.Model):
-    date = models.DateField(null=True)
-    data = JSONField(null=True)
-    sale = models.PositiveIntegerField(null=False, blank=False)
-    discount = models.PositiveIntegerField(null=False, blank=False)
+    settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
+    date = models.DateField(unique=True)
+    software_data = JSONField(null=True, load_kwargs={
+                              'object_pairs_hook': OrderedDict})
+    manager_data = JSONField(null=True, load_kwargs={
+                             'object_pairs_hook': OrderedDict})
+    software_sale = models.PositiveIntegerField(null=False, blank=False)
+    manager_sale = models.PositiveIntegerField(null=False, blank=False)
+    software_discount = models.PositiveIntegerField(null=False, blank=False)
+    cash_details = models.ForeignKey("CashDetails", on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    created_by = models.CharField(max_length=50)
     last_modified = models.DateTimeField(auto_now=True)
-    last_modified_by = models.CharField(max_length=50)
+    last_modified_by = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"SaleSummary-{self.date}"
+
+
+class PaymentModeCategory(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    last_modified_by = models.CharField(max_length=50, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PaymentMode(models.Model):
+    ENTRY_TYPE_CHOICES = (
+        ('MANAGER', 'SaleSummary: ManagerColumn'),
+        ('SOFTWARE', 'SaleSummary: SoftwareColumn'),
+        ('BOTH', 'SaleSummary: Manager & Software Columns'),
+    )
+    name = models.CharField(max_length=50, unique=True)
+    display_in = models.CharField(max_length=10, choices=ENTRY_TYPE_CHOICES)
+    category = models.ForeignKey("PaymentModeCategory", on_delete=models.PROTECT, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
