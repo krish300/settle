@@ -83,8 +83,7 @@
 import axios from "axios";
 export default {
   name: "EntriesGrid",
-  components: {
-  },
+  components: {},
   methods: {
     catgeorySelection(data) {
       this.cashOutRecord = {};

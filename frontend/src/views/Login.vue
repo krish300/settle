@@ -1,9 +1,9 @@
 <template>
-<v-app>
-  <div class="login">
-    <UserLogin />
-  </div>
-</v-app>
+  <v-app>
+    <div class="login">
+      <UserLogin />
+    </div>
+  </v-app>
 </template>
 
 <script>

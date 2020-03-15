@@ -56,7 +56,7 @@ export default {
       this.invalidUser = true;
       if (this.$refs.form.validate()) {
         // validate login
-        if (this.password == "1234"){
+        if (this.password == "1234") {
           this.invalidUser = false;
         }
         if (this.invalidUser) {
@@ -70,7 +70,7 @@ export default {
         }
       }
     },
-    userNameChange(){},
+    userNameChange() {},
     resetModel() {}
   },
   data() {
