@@ -1,9 +1,9 @@
 <template>
-<v-app>
-  <div class="salesummary">
-    <h2>SaleSummary: comming soon</h2>
-  </div>
-</v-app>
+  <v-app>
+    <div class="salesummary">
+      <h2>SaleSummary: comming soon</h2>
+    </div>
+  </v-app>
 </template>
 
 <script>
@@ -12,6 +12,6 @@
 
 export default {
   name: "SaleSummary",
-  components: {
-  }
+  components: {}
 };
+</script>

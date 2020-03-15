@@ -1,9 +1,9 @@
 <template>
-<v-app>
-  <div class="reports">
-    <h2>Peports: comming soon</h2>
-  </div>
-</v-app>
+  <v-app>
+    <div class="reports">
+      <h2>Peports: comming soon</h2>
+    </div>
+  </v-app>
 </template>
 
 <script>
@@ -12,6 +12,6 @@
 
 export default {
   name: "Reports",
-  components: {
-  }
+  components: {}
 };
+</script>

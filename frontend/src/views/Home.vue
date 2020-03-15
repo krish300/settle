@@ -25,13 +25,7 @@
       <v-spacer></v-spacer>
       <!-- <v-btn icon @click="extendedCalander=!extendedCalander"> -->
       <span inline-block align="right">
-        <v-dialog
-          ref="dialog"
-          v-model="modal"
-          :return-value.sync="date"
-          persistent
-          width="25%"
-        >
+        <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="25%">
           <template v-slot:activator="{ on }">
             <v-text-field
               v-model="date"
@@ -44,9 +38,7 @@
           <v-date-picker v-model="date" type="date" scrollable>
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.dialog.save(date)"
-              >OK</v-btn
-            >
+            <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
           </v-date-picker>
         </v-dialog>
       </span>
