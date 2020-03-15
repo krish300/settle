@@ -8,6 +8,7 @@ from . import serializers
 
 class Base:
     filter_backends = (DjangoFilterBackend,)
+    #FIXME(kt): temporaray disable of auth
     #permission_classes = (IsAuthenticated,)
 
 
