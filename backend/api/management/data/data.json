@@ -345,5 +345,76 @@
             "1",
             "10"
         ]
+    ],
+    "PaymentModeCategory": [
+        "QR-Payments",
+        "TEST-GROUP"
+    ],
+    "PaymentMode": [
+        [
+            "Cash",
+            "BOTH",
+            null
+        ],
+        [
+            "Card",
+            "BOTH",
+            null
+        ],
+        [
+            "PhonePe",
+            "SOFTWARE",
+            "QR-Payments"
+        ],
+        [
+            "Gpay",
+            "SOFTWARE",
+            "QR-Payments"
+        ],
+        [
+            "Paytm",
+            "SOFTWARE",
+            "QR-Payments"
+        ],
+        [
+            "PaytmBusiness",
+            "MANAGER",
+            "QR-Payments"
+        ],
+        [
+            "Dineout",
+            "BOTH",
+            null
+        ],
+        [
+            "ZomatoGold",
+            "BOTH",
+            null
+        ],
+        [
+            "ZomatoOnline",
+            "BOTH",
+            null
+        ],
+        [
+            "SwiggyOnline",
+            "BOTH",
+            null
+        ],
+        [
+            "test-app-1",
+            "SOFTWARE",
+            "TEST-GROUP"
+        ],
+        [
+            "test-app-2",            
+            "MANAGER",
+            "TEST-GROUP"
+        ],
+        [
+            "test-app-3",            
+            "MANAGER",
+            "TEST-GROUP"
+        ]
     ]
 }
