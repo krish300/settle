@@ -8,7 +8,8 @@ from . import serializers
 
 class Base:
     filter_backends = (DjangoFilterBackend,)
-    permission_classes = (IsAuthenticated,)
+    #FIXME(kt): temporaray disable of auth
+    #permission_classes = (IsAuthenticated,)
 
 
 class EntityViewSet(Base, ReadOnlyModelViewSet):
