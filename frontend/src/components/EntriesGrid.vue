@@ -89,9 +89,7 @@ export default {
       this.cashOutRecord = {};
       this.cashOutRecord.category = data;
       axios
-        .get(
-          `http://krish300.pythonanywhere.com/api/entity/?type=${data.entity_type}`
-        )
+        .get(`http://krish300.pythonanywhere.com/api/entity/?type=${data.entity_type}`)
         .then(response => {
           if (response.data.length > 0) {
             this.entityOptions = response.data;

@@ -3,9 +3,7 @@
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="4">
-          <v-alert type="error" dismissible v-if="showError"
-            >Invalid User Details</v-alert
-          >
+          <v-alert type="error" dismissible v-if="showError">Invalid User Details</v-alert>
           <v-card class="elevation-12">
             <v-toolbar color="primary" dark flat>
               <v-toolbar-title>User Login</v-toolbar-title>
