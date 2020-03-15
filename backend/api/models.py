@@ -50,6 +50,10 @@ class EntryCategory(models.Model):
 
 
 class Entry(models.Model):
+    
+    class Meta:
+        pass
+
     DEFAULT_ENTRY_TYPE = 'CR'
     ENTRY_TYPE_CHOICES = (
         (DEFAULT_ENTRY_TYPE, 'CREDIT'),
@@ -67,6 +71,7 @@ class Entry(models.Model):
         'EntryCategory', on_delete=models.PROTECT)
     type = models.CharField(
         max_length=2, choices=ENTRY_TYPE_CHOICES, default=DEFAULT_ENTRY_TYPE)
+    date = models.DateField(unique=True)
     mode = models.CharField(
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
