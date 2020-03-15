@@ -70,6 +70,10 @@
         <td class="text-xs-right">{{ props.item.entity }}</td>
         <td class="text-xs-right">{{ props.item.description }}</td>
         <td class="text-xs-right">{{ props.item.price }}</td>
+        <!-- <td class="text-xs-right"><v-icon small>test</v-icon></td> -->
+      </template>
+      <template>
+        <v-icon small>mdi-delete</v-icon>
       </template>
     </v-data-table>
     <v-row class="text-center"></v-row>
@@ -78,7 +82,8 @@
 <script>
 import axios from "axios";
 export default {
-  name: "Categories",
+  name: "EntriesGrid",
+  components: {},
   methods: {
     catgeorySelection(data) {
       this.cashOutRecord = {};
@@ -152,7 +157,8 @@ export default {
           align: "center",
           sortable: false
         },
-        { text: "Amount", value: "price", align: "center", sortable: false }
+        { text: "Amount", value: "price", align: "center", sortable: false },
+        { text: "Action", vlaue: "action", align: "center", sortable: false }
       ],
       cashOutRecord: {},
       cashOutRecords: []
@@ -165,7 +171,7 @@ export default {
         this.categoryOptions = response.data;
       })
       .catch(error => {
-        console.log("error while fetching entry-category");
+        console.log("error while fetching entry-category", error);
       });
   }
 };
