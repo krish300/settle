@@ -52,7 +52,7 @@ class EntryCategory(models.Model):
 class Entry(models.Model):
     
     class Meta:
-        pass
+        ordering = ['-date', 'type']
 
     DEFAULT_ENTRY_TYPE = 'CR'
     ENTRY_TYPE_CHOICES = (
@@ -71,7 +71,7 @@ class Entry(models.Model):
         'EntryCategory', on_delete=models.PROTECT)
     type = models.CharField(
         max_length=2, choices=ENTRY_TYPE_CHOICES, default=DEFAULT_ENTRY_TYPE)
-    date = models.DateField(unique=True)
+    date = models.DateField()
     mode = models.CharField(
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
@@ -82,6 +82,9 @@ class Entry(models.Model):
 
 
 class Settlement(models.Model):
+    class Meta:
+        ordering = ['-date']
+        get_latest_by = '-date'
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     date = models.DateField(unique=True)
@@ -97,6 +100,9 @@ class Settlement(models.Model):
 
 
 class CashDetails(models.Model):
+    class Meta:
+        ordering = ['-date']
+        get_latest_by = '-date'
     date = models.DateField(unique=True)
     opening_cash = models.PositiveIntegerField(null=False, blank=False)
     closing_cash = models.PositiveIntegerField(null=False, blank=False)
@@ -106,6 +112,9 @@ class CashDetails(models.Model):
 
 
 class SaleSummary(models.Model):
+    class Meta:
+        ordering = ['-date']
+        get_latest_by = '-date'
     settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
     date = models.DateField(unique=True)
     software_data = JSONField(null=True, load_kwargs={
