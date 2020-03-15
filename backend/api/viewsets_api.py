@@ -1,57 +1,59 @@
-from rest_framework import viewsets, permissions
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 
 from . import models
 from . import serializers
 
 
-class EntityViewSet(viewsets.ReadOnlyModelViewSet):
+class Base:
+    filter_backends = (DjangoFilterBackend,)
+    permission_classes = (IsAuthenticated,)
+
+
+class EntityViewSet(Base, ReadOnlyModelViewSet):
     queryset = models.Entity.objects.all()
     serializer_class = serializers.EntitySerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['type', 'category']
-    permission_classes = (permissions.IsAuthenticated,)
+    filter_fields = ('type', 'category')
 
-class EntityTypeViewSet(viewsets.ReadOnlyModelViewSet):
+
+class EntityTypeViewSet(Base, ReadOnlyModelViewSet):
     queryset = models.EntityType.objects.all()
     serializer_class = serializers.EntityTypeSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['name']
+    filter_fields = ('name',)
 
 
-class EntryCategoryViewSet(viewsets.ReadOnlyModelViewSet):
+class EntryCategoryViewSet(Base, ReadOnlyModelViewSet):
     queryset = models.EntryCategory.objects.all()
     serializer_class = serializers.EntryCategorySerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['name']
+    filter_fields = ('name',)
 
 
-class EntryViewSet(viewsets.ModelViewSet):
+class EntryViewSet(Base, ModelViewSet):
     queryset = models.Entry.objects.all()
     serializer_class = serializers.EntrySerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['date', 'settlement']
+    filter_fields = ('date', 'settlement')
 
-class SettlementViewSet(viewsets.ModelViewSet):
+
+class SettlementViewSet(Base, ModelViewSet):
     queryset = models.Settlement.objects.all()
     serializer_class = serializers.SettlementSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['date', 'name']
+    filter_fields = ('date', 'name')
 
-class CashDetailsViewSet(viewsets.ModelViewSet):
+
+class CashDetailsViewSet(Base, ModelViewSet):
     queryset = models.CashDetails.objects.all()
     serializer_class = serializers.CashDetailsSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['date']
+    filter_fields = ('date',)
 
-class SaleSummaryViewSet(viewsets.ModelViewSet):
+
+class SaleSummaryViewSet(Base, ModelViewSet):
     queryset = models.SaleSummary.objects.all()
     serializer_class = serializers.SaleSummarySerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['settlement', 'date']
+    filter_fields = ('settlement', 'date')
 
-class PaymentModeViewSet(viewsets.ReadOnlyModelViewSet):
+
+class PaymentModeViewSet(Base, ReadOnlyModelViewSet):
     queryset = models.PaymentMode.objects.all()
     serializer_class = serializers.PaymentModeSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['display_in']
+    filter_fields = ('display_in',)
