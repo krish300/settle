@@ -40,7 +40,6 @@
           <v-text-field
             type="number"
             v-model="price"
-            :key="price"
             :rules="[v => !!v || 'Price  is required']"
             label="Amount"
             aria-required="true"
@@ -50,7 +49,6 @@
         <v-col cols="3">
           <v-text-field
             v-model="description"
-            :key="description"
             :rules="[v => !!v || 'Description  is required']"
             label="Description"
             clearable
@@ -65,18 +63,20 @@
     </v-form>
 
     <v-data-table :headers="headers" :items="cashOutRecords">
-      <template v-slot:items="props">
-        <td class="text-xs-right">{{ props.item.expenceCategory }}</td>
-        <td class="text-xs-right">{{ props.item.entity }}</td>
-        <td class="text-xs-right">{{ props.item.description }}</td>
-        <td class="text-xs-right">{{ props.item.price }}</td>
-        <!-- <td class="text-xs-right"><v-icon small>test</v-icon></td> -->
-      </template>
-      <template>
-        <v-icon small>mdi-delete</v-icon>
+      <template v-slot:item="row">
+        <tr>
+          <td>{{ row.item.expenceCategory }}</td>
+          <td>{{ row.item.entity }}</td>
+          <td>{{ row.item.description }}</td>
+          <td>{{ row.item.price }}</td>
+          <td>
+            <v-btn class="mx-2" fab dark small color="gray" @click="deleteItem(row.item)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </td>
+        </tr>
       </template>
     </v-data-table>
-    <v-row class="text-center"></v-row>
   </v-container>
 </template>
 <script>
@@ -124,8 +124,11 @@ export default {
       this.selectedCategory = null;
       this.entitySelected = "";
       this.modeSelected = "";
-      this.price = null;
-      this.description = null;
+      this.price = "";
+      this.description = "";
+    },
+    deleteItem(item) {
+      console.log("item delete", item);
     }
   },
   data() {
@@ -162,7 +165,7 @@ export default {
       cashOutRecords: []
     };
   },
-  created() {
+  fetchEntryCategories() {
     axios
       .get("http://krish300.pythonanywhere.com/api/entry-category/")
       .then(response => {
@@ -171,6 +174,7 @@ export default {
       .catch(error => {
         console.log("error while fetching entry-category", error);
       });
-  }
+  },
+  fetchEntries() {}
 };
 </script>
