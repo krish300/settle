@@ -1,6 +1,7 @@
+import uuid
+
 from django.db import models
 from jsonfield import JSONField
-import uuid
 from collections import OrderedDict
 
 

@@ -15,6 +15,7 @@ whitenoise = {extras = ["brotli"],version = "*"}
 djangorestframework = "*"
 django-filter = "*"
 jsonfield = "*"
+django-cors-headers = "*"
 
 [requires]
 python_version = "3.8"
