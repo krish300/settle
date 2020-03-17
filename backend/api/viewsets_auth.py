@@ -72,3 +72,13 @@ class AuthViewSet(viewsets.GenericViewSet):
             response = Response(data, headers=headers, status=401)
             response.delete_cookie('authenticated')
         return response
+
+    @action(detail=False, methods=['get'], url_path='users')
+    def logout(self, request, *args, **kwargs):
+        headers = {}
+        user_list = User.objects.filter(is_active=True)        
+        response = Response({}, headers=headers, status=404)
+        if len(user_list) > 0:
+            user_names = [user.username for user in user_list]
+            response = Response({'users':user_names}, headers=headers, status=200)
+        return response
