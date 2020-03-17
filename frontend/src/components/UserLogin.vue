@@ -47,25 +47,40 @@
 </template>
 <script>
 import router from "../router";
+import axios from "axios";
+import { mapState, Store } from "vuex";
 export default {
   name: "UserLogin",
   methods: {
     login() {
       this.invalidUser = true;
       if (this.$refs.form.validate()) {
-        // validate login
-        if (this.password == "1234") {
-          this.invalidUser = false;
-        }
-        if (this.invalidUser) {
-          console.log("inside for invalid user", this.invalidUser);
-          // reset the form
-          // display error message
-          this.password = "";
-          this.showError = true;
-        } else {
-          router.push({ path: "home" });
-        }
+        let creds = new FormData();
+        creds.set("username", this.userName);
+        creds.set("password", this.password);
+        axios({
+          method: "POST",
+          url: `${process.env.VUE_APP_SERVER_URL}/api/auth/login/`,
+          data: creds,
+          headers: { "Content-Type": "multipart/form-data" }
+        })
+          .then(response => {
+            this.invalidUser = false;
+            //this.currentUserInfo = response.data;
+            this.$store.commit("setCurentUserInfo", response.data);
+            if (this.invalidUser) {
+              console.log("inside for invalid user", this.invalidUser);
+              // reset the form
+              // display error message
+              this.password = "";
+              this.showError = true;
+            } else {
+              router.push({ path: "home" });
+            }
+          })
+          .catch(error => {
+            console.log("error while trying to authenticate", error);
+          });
       }
     },
     userNameChange() {},
@@ -78,8 +93,21 @@ export default {
       invalidUser: false,
       userName: "",
       password: "",
-      userNames: ["Krishna", "Shiva", "Sandeep"]
+      userNames: []
     };
+  },
+  created() {
+    axios
+      .get(`${process.env.VUE_APP_SERVER_URL}/api/auth/users/`)
+      .then(response => {
+        this.userNames = response.data.users;
+      })
+      .catch(error => {
+        console.log("error while fetching user list", error);
+      });
+  },
+  computed: {
+    ...mapState(["currentUserInfo"])
   }
 };
 </script>
