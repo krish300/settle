@@ -28,7 +28,8 @@ class Command(BaseCommand):
 
                 self.success('Ingesting: ExpenseCategory')
                 exp_categories = data.get('ExpenseCategory')
-                exp_category_objs = [ExpenseCategory(name=i) for i in exp_categories]
+                exp_category_objs = [ExpenseCategory(
+                    name=i) for i in exp_categories]
                 ExpenseCategory.objects.bulk_create(exp_category_objs)
 
                 self.success('Ingesting: EntryCategory')
@@ -54,17 +55,19 @@ class Command(BaseCommand):
 
                 self.success('Ingesting: PaymentModeCategory')
                 pay_categories = data.get('PaymentModeCategory')
-                pay_category_objs = [PaymentModeCategory(name=i) for i in pay_categories]
+                pay_category_objs = [PaymentModeCategory(
+                    name=i) for i in pay_categories]
                 PaymentModeCategory.objects.bulk_create(pay_category_objs)
 
                 self.success('Ingesting: PaymentMode')
                 payment_modes = data.get('PaymentMode')
                 payment_mode_objs = []
                 for i in payment_modes:
-                    cat=None
-                    if i[2] != None:
-                        cat=PaymentModeCategory.objects.get(name=i[2])
-                    payment_mode_objs.append(PaymentMode(name=i[0],display_in=i[1], category=cat))
+                    cat = None
+                    if i[3] != None:
+                        cat = PaymentModeCategory.objects.get(name=i[3])
+                    payment_mode_objs.append(PaymentMode(
+                        name=i[0], display_name=i[1], display_in=i[2], category=cat))
                 PaymentMode.objects.bulk_create(payment_mode_objs)
 
         except Exception as e:

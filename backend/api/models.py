@@ -72,7 +72,7 @@ class Entry(models.Model):
         'EntryCategory', on_delete=models.PROTECT)
     type = models.CharField(
         max_length=2, choices=ENTRY_TYPE_CHOICES, default=DEFAULT_ENTRY_TYPE)
-    date = models.DateField(input_formats='%d-%m-%Y')
+    date = models.DateField()
     mode = models.CharField(
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
@@ -89,7 +89,7 @@ class Settlement(models.Model):
         get_latest_by = '-date'
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
-    date = models.DateField(unique=True, input_formats='%d-%m-%Y')
+    date = models.DateField(unique=True)
     is_closed = models.BooleanField(default=False)
     closed_by = models.CharField(max_length=50, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -105,7 +105,7 @@ class CashDetails(models.Model):
     class Meta:
         ordering = ['-date']
         get_latest_by = '-date'
-    date = models.DateField(unique=True, input_formats='%d-%m-%Y')
+    date = models.DateField(unique=True)
     opening_cash = models.PositiveIntegerField(null=False, blank=False)
     closing_cash = models.PositiveIntegerField(null=False, blank=False)
 
@@ -118,7 +118,7 @@ class SaleSummary(models.Model):
         ordering = ['-date']
         get_latest_by = '-date'
     settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
-    date = models.DateField(unique=True, input_formats='%d-%m-%Y')
+    date = models.DateField(unique=True)
     software_data = JSONField(null=True, load_kwargs={
                               'object_pairs_hook': OrderedDict})
     manager_data = JSONField(null=True, load_kwargs={
@@ -154,6 +154,7 @@ class PaymentMode(models.Model):
         ('BOTH', 'SaleSummary: Manager & Software Columns'),
     )
     name = models.CharField(max_length=50, unique=True)
+    display_name = models.CharField(max_length=50, unique=True)
     display_in = models.CharField(max_length=10, choices=ENTRY_TYPE_CHOICES)
     category = models.ForeignKey(
         "PaymentModeCategory", on_delete=models.PROTECT, null=True)
@@ -162,4 +163,4 @@ class PaymentMode(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return self.display_name
