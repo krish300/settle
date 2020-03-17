@@ -154,6 +154,7 @@ class PaymentMode(models.Model):
         ('BOTH', 'SaleSummary: Manager & Software Columns'),
     )
     name = models.CharField(max_length=50, unique=True)
+    display_name = models.CharField(max_length=50, unique=True)
     display_in = models.CharField(max_length=10, choices=ENTRY_TYPE_CHOICES)
     category = models.ForeignKey(
         "PaymentModeCategory", on_delete=models.PROTECT, null=True)
@@ -162,4 +163,4 @@ class PaymentMode(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return self.display_name
