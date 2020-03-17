@@ -74,11 +74,12 @@ class AuthViewSet(viewsets.GenericViewSet):
         return response
 
     @action(detail=False, methods=['get'], url_path='users')
-    def logout(self, request, *args, **kwargs):
+    def users(self, request, *args, **kwargs):
         headers = {}
         user_list = User.objects.filter(is_active=True)        
         response = Response({}, headers=headers, status=404)
         if len(user_list) > 0:
             user_names = [user.username for user in user_list]
+            headers['Cache-Control'] = 'private, no-cache'
             response = Response({'users':user_names}, headers=headers, status=200)
         return response
