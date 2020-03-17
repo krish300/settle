@@ -24,7 +24,8 @@ class EntryCategorySerializer(serializers.ModelSerializer):
 
 
 class EntrySerializer(serializers.ModelSerializer):
-    expense_category = serializers.CharField(source='category')
+    expense_category = serializers.CharField(source='category', read_only=True)
+    entity_name = serializers.CharField(source='entity', read_only=True)
 
     class Meta:
         model = models.Entry
