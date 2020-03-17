@@ -51,7 +51,7 @@ class EntryCategory(models.Model):
 
 
 class Entry(models.Model):
-    
+
     class Meta:
         ordering = ['-date', 'type']
 
@@ -72,7 +72,7 @@ class Entry(models.Model):
         'EntryCategory', on_delete=models.PROTECT)
     type = models.CharField(
         max_length=2, choices=ENTRY_TYPE_CHOICES, default=DEFAULT_ENTRY_TYPE)
-    date = models.DateField()
+    date = models.DateField(input_formats='%d-%m-%Y')
     mode = models.CharField(
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
@@ -89,11 +89,11 @@ class Settlement(models.Model):
         get_latest_by = '-date'
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
-    date = models.DateField(unique=True)
+    date = models.DateField(unique=True, input_formats='%d-%m-%Y')
     is_closed = models.BooleanField(default=False)
     closed_by = models.CharField(max_length=50, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    last_modified = models.DateTimeField(auto_now=True)    
+    last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=True)
 
@@ -105,7 +105,7 @@ class CashDetails(models.Model):
     class Meta:
         ordering = ['-date']
         get_latest_by = '-date'
-    date = models.DateField(unique=True)
+    date = models.DateField(unique=True, input_formats='%d-%m-%Y')
     opening_cash = models.PositiveIntegerField(null=False, blank=False)
     closing_cash = models.PositiveIntegerField(null=False, blank=False)
 
@@ -118,7 +118,7 @@ class SaleSummary(models.Model):
         ordering = ['-date']
         get_latest_by = '-date'
     settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
-    date = models.DateField(unique=True)
+    date = models.DateField(unique=True, input_formats='%d-%m-%Y')
     software_data = JSONField(null=True, load_kwargs={
                               'object_pairs_hook': OrderedDict})
     manager_data = JSONField(null=True, load_kwargs={
@@ -155,7 +155,8 @@ class PaymentMode(models.Model):
     )
     name = models.CharField(max_length=50, unique=True)
     display_in = models.CharField(max_length=10, choices=ENTRY_TYPE_CHOICES)
-    category = models.ForeignKey("PaymentModeCategory", on_delete=models.PROTECT, null=True)
+    category = models.ForeignKey(
+        "PaymentModeCategory", on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)

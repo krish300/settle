@@ -4,7 +4,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-#configure the location for backend api
+# configure the location for backend api
 API_DIR = os.path.join(BASE_DIR, 'api')
 
 # Quick-start development settings - unsuitable for production
@@ -121,7 +121,8 @@ REST_FRAMEWORK = {
 }
 # FIXME(kt): remove later
 if not DEBUG:
-    REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = ['rest_framework.permissions.IsAuthenticated']
+    REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = [
+        'rest_framework.permissions.IsAuthenticated']
 
 # FIXME(rv): remove on prod!!
 CORS_ORIGIN_ALLOW_ALL = True
