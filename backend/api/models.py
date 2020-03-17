@@ -51,7 +51,7 @@ class EntryCategory(models.Model):
 
 
 class Entry(models.Model):
-    
+
     class Meta:
         ordering = ['-date', 'type']
 
@@ -93,7 +93,7 @@ class Settlement(models.Model):
     is_closed = models.BooleanField(default=False)
     closed_by = models.CharField(max_length=50, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    last_modified = models.DateTimeField(auto_now=True)    
+    last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=True)
 
@@ -155,7 +155,8 @@ class PaymentMode(models.Model):
     )
     name = models.CharField(max_length=50, unique=True)
     display_in = models.CharField(max_length=10, choices=ENTRY_TYPE_CHOICES)
-    category = models.ForeignKey("PaymentModeCategory", on_delete=models.PROTECT, null=True)
+    category = models.ForeignKey(
+        "PaymentModeCategory", on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
