@@ -30,8 +30,9 @@ class AuthViewSet(viewsets.GenericViewSet):
 
         if not auth_obj:
             return _send400('invalid username or password')
-        
-        potential_user = User.objects.filter(username=auth_obj['username']).first()
+
+        potential_user = User.objects.filter(
+            username=auth_obj['username']).first()
         if not potential_user:
             return _send400('non existent user')
 
@@ -46,9 +47,13 @@ class AuthViewSet(viewsets.GenericViewSet):
 
         if auth_user == potential_user:
             login(request, auth_user)
+            req_flds = ('id', 'username', 'is_active', 'is_anonymous', 'is_authenticated',
+                        'is_staff', 'is_superuser', 'last_login', 'first_name', 'last_name')
             headers = {}
+            data = {}
+            for fld in req_flds:
+                data[fld] = getattr(potential_user, fld)
             headers['Cache-Control'] = 'private, no-cache'
-
             response = Response(data, headers=headers, status=200)
             response.set_cookie('authenticated', value='True', secure=True)
             return response
@@ -63,6 +68,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         if current_user.is_authenticated:
             headers['Cache-Control'] = 'private, no-cache'
             logout(request)
-            response = Response({}, headers=headers, status=401)
+            data = {'logged_out': True}
+            response = Response(data, headers=headers, status=401)
             response.delete_cookie('authenticated')
         return response
