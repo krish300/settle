@@ -30,24 +30,28 @@ class EntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Entry
         fields = '__all__'
+        extra_kwargs = {'date': {'format': '%d-%m-%Y'}}
 
 
 class SettlementSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Settlement
         fields = '__all__'
+        extra_kwargs = {'date': {'format': '%d-%m-%Y'}}
 
 
 class CashDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CashDetails
         fields = '__all__'
+        extra_kwargs = {'date': {'format': '%d-%m-%Y'}}
 
 
 class SaleSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SaleSummary
         fields = '__all__'
+        extra_kwargs = {'date': {'format': '%d-%m-%Y'}}
 
 
 class PaymentModeSerializer(serializers.ModelSerializer):
