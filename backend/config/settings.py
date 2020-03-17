@@ -118,8 +118,10 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
 }
+# FIXME(kt): remove later
+if not DEBUG:
+    REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = ['rest_framework.permissions.IsAuthenticated']
 
 # FIXME(rv): remove on prod!!
 CORS_ORIGIN_ALLOW_ALL = True
