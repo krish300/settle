@@ -89,7 +89,7 @@ export default {
       this.cashOutRecord = {};
       this.cashOutRecord.category = data;
       axios
-        .get(`${process.env.VUE_APP_API_URL}/entity/?type=${data.entity_type}`)
+        .get(`${process.env.VUE_APP_SERVER_URL}/api/entity/?type=${data.entity_type}`)
         .then(response => {
           if (response.data.length > 0) {
             this.entityOptions = response.data;
@@ -164,7 +164,7 @@ export default {
   },
   created() {
     axios
-      .get(`${process.env.VUE_APP_API_URL}/entry-category/`)
+      .get(`${process.env.VUE_APP_SERVER_URL}/api/entry-category/`)
       .then(response => {
         this.categoryOptions = response.data;
       })
