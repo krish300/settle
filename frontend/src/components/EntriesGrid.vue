@@ -70,8 +70,10 @@
           <td>{{ row.item.description }}</td>
           <td>{{ row.item.price }}</td>
           <td>
-            <v-btn class="mx-2" dark small color="gray" @click="deleteItem(row.item)">
-              <v-icon>delete</v-icon>
+            <v-btn small fab @click="deleteItem(row.item)">
+              <span class="group pa-2">
+                <v-icon>delete</v-icon>
+              </span>
             </v-btn>
           </td>
         </tr>
@@ -165,7 +167,7 @@ export default {
       cashOutRecords: []
     };
   },
-  fetchEntryCategories() {
+  created() {
     axios
       .get(`${process.env.VUE_APP_SERVER_URL}/api/entry-category/`)
       .then(response => {
