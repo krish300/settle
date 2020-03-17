@@ -70,7 +70,7 @@
           <td>{{ row.item.description }}</td>
           <td>{{ row.item.price }}</td>
           <td>
-            <v-btn class="mx-2" fab dark small color="gray" @click="deleteItem(row.item)">
+            <v-btn class="mx-2" dark small color="gray" @click="deleteItem(row.item)">
               <v-icon>delete</v-icon>
             </v-btn>
           </td>
@@ -174,7 +174,6 @@ export default {
       .catch(error => {
         console.log("error while fetching entry-category", error);
       });
-  },
-  fetchEntries() {}
+  }
 };
 </script>
