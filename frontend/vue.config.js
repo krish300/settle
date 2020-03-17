@@ -1,4 +1,8 @@
 module.exports = {
   transpileDependencies: ["vuetify"],
-  assetsDir: "static"
+  assetsDir: "static",
+
+  pwa: {
+    name: 'settle'
+  }
 };

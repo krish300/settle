@@ -19,9 +19,9 @@
     </nav>
     <v-app-bar clipped-left app color="primary" dark extension-height="100%">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-app-bar-title class="font-italic font-weight-bold"
-        >Settlement For Date: 14-Mar-2020</v-app-bar-title
-      >
+      <v-toolbar-title class="font-italic font-weight-bold">
+        Settlement For Date: 14-Mar-2020
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- <v-btn icon @click="extendedCalander=!extendedCalander"> -->
       <span inline-block align="right">
