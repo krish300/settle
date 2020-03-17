@@ -4,6 +4,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+#configure the location for backend api
+API_DIR = os.path.join(BASE_DIR, 'api')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -63,6 +65,10 @@ TEMPLATES = [
     },
 ]
 
+STATICFILES_DIRS = [
+    os.path.join(API_DIR, 'front-app/static'),
+]
+
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
@@ -110,17 +116,12 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
 }
+# FIXME(kt): remove later
+if not DEBUG:
+    REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = ['rest_framework.permissions.IsAuthenticated']
 
 # FIXME(rv): remove on prod!!
 CORS_ORIGIN_ALLOW_ALL = True
@@ -129,3 +130,14 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     'http://.*',
     'https://.*',
 ]
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+WHITENOISE_INDEX_FILE = True
+WHITENOISE_ROOT = os.path.join(API_DIR, 'front-app')

@@ -40,7 +40,6 @@
           <v-text-field
             type="number"
             v-model="price"
-            :key="price"
             :rules="[v => !!v || 'Price  is required']"
             label="Amount"
             aria-required="true"
@@ -50,7 +49,6 @@
         <v-col cols="3">
           <v-text-field
             v-model="description"
-            :key="description"
             :rules="[v => !!v || 'Description  is required']"
             label="Description"
             clearable
@@ -65,18 +63,22 @@
     </v-form>
 
     <v-data-table :headers="headers" :items="cashOutRecords">
-      <template v-slot:items="props">
-        <td class="text-xs-right">{{ props.item.expenceCategory }}</td>
-        <td class="text-xs-right">{{ props.item.entity }}</td>
-        <td class="text-xs-right">{{ props.item.description }}</td>
-        <td class="text-xs-right">{{ props.item.price }}</td>
-        <!-- <td class="text-xs-right"><v-icon small>test</v-icon></td> -->
-      </template>
-      <template>
-        <v-icon small>mdi-delete</v-icon>
+      <template v-slot:item="row">
+        <tr>
+          <td>{{ row.item.expenceCategory }}</td>
+          <td>{{ row.item.entity }}</td>
+          <td>{{ row.item.description }}</td>
+          <td>{{ row.item.price }}</td>
+          <td>
+            <v-btn small fab @click="deleteItem(row.item)">
+              <span class="group pa-2">
+                <v-icon>delete</v-icon>
+              </span>
+            </v-btn>
+          </td>
+        </tr>
       </template>
     </v-data-table>
-    <v-row class="text-center"></v-row>
   </v-container>
 </template>
 <script>
@@ -89,7 +91,7 @@ export default {
       this.cashOutRecord = {};
       this.cashOutRecord.category = data;
       axios
-        .get(`http://krish300.pythonanywhere.com/api/entity/?type=${data.entity_type}`)
+        .get(`${process.env.VUE_APP_SERVER_URL}/api/entity/?type=${data.entity_type}`)
         .then(response => {
           if (response.data.length > 0) {
             this.entityOptions = response.data;
@@ -124,8 +126,11 @@ export default {
       this.selectedCategory = null;
       this.entitySelected = "";
       this.modeSelected = "";
-      this.price = null;
-      this.description = null;
+      this.price = "";
+      this.description = "";
+    },
+    deleteItem(item) {
+      console.log("item delete", item);
     }
   },
   data() {
@@ -164,7 +169,7 @@ export default {
   },
   created() {
     axios
-      .get("http://krish300.pythonanywhere.com/api/entry-category/")
+      .get(`${process.env.VUE_APP_SERVER_URL}/api/entry-category/`)
       .then(response => {
         this.categoryOptions = response.data;
       })

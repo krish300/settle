@@ -19,29 +19,43 @@
     </nav>
     <v-app-bar clipped-left app color="primary" dark extension-height="100%">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-app-bar-title class="font-italic font-weight-bold"
-        >Settlement For Date: 14-Mar-2020</v-app-bar-title
-      >
+      <v-toolbar-title class="font-italic font-weight-bold">
+        Settlement For Date: 14-Mar-2020
+      </v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn color="primary" v-on="on">
+            {{ userInfo.username }}
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
       <!-- <v-btn icon @click="extendedCalander=!extendedCalander"> -->
-      <span inline-block align="right">
-        <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="25%">
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="date"
-              prepend-icon="event"
-              readonly
-              v-on="on"
-              inline-block
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" type="date" scrollable>
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
-          </v-date-picker>
-        </v-dialog>
-      </span>
+      <!-- <span inline-block justify="end" align="center"> -->
+      <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="25%">
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            v-model="date"
+            prepend-inner-icon="event"
+            hide-details="true"
+            readonly
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="date" type="date" scrollable>
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+          <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+        </v-date-picker>
+      </v-dialog>
+      <!-- </span> -->
       <!-- <template v-slot:extension v-if="extendedCalander">
           <v-date-picker full-width class="mb-4" />
       </template> -->
@@ -92,6 +106,12 @@ export default {
         compName: "SaleSummary"
       }
     ]
-  })
+  }),
+
+  computed: {
+    userInfo() {
+      return this.$store.state.currentUserInfo;
+    }
+  }
 };
 </script>
