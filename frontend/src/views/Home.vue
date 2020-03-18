@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import EntriesGrid from "@/components/EntriesGrid";
-import SaleSummary from "@/components/SaleSummary";
+import EntriesGrid from "./EntriesGrid";
+import SaleSummary from "./SaleSummary";
 
 export default {
   name: "Home",

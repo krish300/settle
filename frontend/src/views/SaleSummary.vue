@@ -1,8 +1,13 @@
 <template>
   <v-app>
-    <div class="salesummary">
-      <h2>SaleSummary: comming soon</h2>
-    </div>
+    <template>
+      <v-data-table
+        item-key="name"
+        class="elevation-1"
+        loading
+        loading-text="Loading... Please wait"
+      ></v-data-table>
+    </template>
   </v-app>
 </template>
 
