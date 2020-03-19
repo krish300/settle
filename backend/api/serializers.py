@@ -55,6 +55,7 @@ class SaleSummarySerializer(serializers.ModelSerializer):
 
 
 class PaymentModeSerializer(serializers.ModelSerializer):
+    category_nm = serializers.CharField(source='category', read_only=True)
     class Meta:
         model = models.PaymentMode
         fields = '__all__'
