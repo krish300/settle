@@ -57,25 +57,8 @@ import { mapState, Store } from "vuex";
 import axios from "axios";
 export default {
   name: "PaymentAppsLayout",
-  methods: {},
-  data() {
-    return {
-      layoutInfo: []
-    };
-  },
-  created() {
-    axios
-      .get(`${process.env.VUE_APP_SERVER_URL}/api/payment-mode/`)
-      .then(response => {
-        this.layoutInfo = response.data;
-      })
-      .catch(error => {
-        console.log("error while fetching available payment modes", error);
-      });
-  },
-  computed: {
-    ...mapState(["currentUserInfo"]),
-    processedTableLayoutData() {
+  methods: {
+    makeTableLayoutData() {
       let returnObj = {};
       this.layoutInfo.forEach(payMode => {
         var ctgry = payMode.category_nm;
@@ -88,20 +71,53 @@ export default {
           returnObj[ctgry].Mgr.push({
             name: payMode.name,
             display_name: payMode.display_name,
-            value: 0
+            value: this.managerSaleData[payMode.name] || 0
           });
         }
         if (payMode.display_in === "SOFTWARE" || payMode.display_in === "BOTH") {
           returnObj[ctgry].Sft.push({
             name: payMode.name,
             display_name: payMode.display_name,
-            value: 0
+            value: this.softwareSaleData[payMode.name] || 0
           });
         }
       });
-      console.log(returnObj);
+      this.processedTableLayoutData = returnObj;
       return returnObj;
     }
+  },
+  data() {
+    return {
+      layoutInfo: [],
+      processedTableLayoutData: {},
+      //FIXME(kt): remove hardcode
+      settlemenId: "340d7515-4e3a-4d5e-a11e-0219bed065d0",
+      softwareSaleData: {},
+      managerSaleData: {}
+    };
+  },
+  created() {
+    axios
+      .get(`${process.env.VUE_APP_SERVER_URL}/api/payment-mode/`)
+      .then(response => {
+        this.layoutInfo = response.data;
+        axios
+          .get(`${process.env.VUE_APP_SERVER_URL}/api/sale-summary/?settlement=${this.settlemenId}`)
+          .then(response => {
+            this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
+            this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
+            this.makeTableLayoutData();
+          })
+          .catch(error => {
+            console.log("error while fetching sale-summary data", error);
+          });
+      })
+      .catch(error => {
+        console.log("error while fetching available payment modes", error);
+      });
+  },
+  computed: {
+    ...mapState(["currentUserInfo"])
   }
 };
 </script>
