@@ -16,18 +16,11 @@
                         <v-row no-gutters>
                           <v-col :cols="6">
                             <v-row no-gutters>
-                              <!-- each column td repesents Software sale and Manager sale respectively -->
-                              <v-col
-                                :cols="6"
-                                v-for="displayCol in ['Sft', 'Mgr']"
-                                :key="displayCol"
-                              >
-                                <!-- each td to hold software/Manager sale info each app-->
+                              <!-- each column td repesents Software sale  -->
+                              <v-col :cols="6">
                                 <td>
-                                  <tr
-                                    v-for="payApp in ctgryData[displayCol]"
-                                    :key="displayCol + payApp.name"
-                                  >
+                                  <!-- each tr to hold software sale info each app-->
+                                  <tr v-for="payApp in ctgryData.Sft" :key="'Sft' + payApp.name">
                                     <td class="text-left pay-app-name-td">
                                       {{ payApp.display_name }}
                                     </td>
@@ -36,7 +29,26 @@
                                         hide-details
                                         dense
                                         single-line
-                                        :value="payApp.value"
+                                        v-model="softwareSaleData[payApp.name]"
+                                      ></v-text-field>
+                                    </td>
+                                  </tr>
+                                </td>
+                              </v-col>
+                              <!-- each column td repesents Manager sale -->
+                              <v-col :cols="6">
+                                <td>
+                                  <!-- each tr to hold Manager sale info each app-->
+                                  <tr v-for="payApp in ctgryData.Mgr" :key="'Mgr' + payApp.name">
+                                    <td class="text-left pay-app-name-td">
+                                      {{ payApp.display_name }}
+                                    </td>
+                                    <td class="pay-app-value-td">
+                                      <v-text-field
+                                        hide-details
+                                        dense
+                                        single-line
+                                        v-model="managerSaleData[payApp.name]"
                                       ></v-text-field>
                                     </td>
                                   </tr>
@@ -50,13 +62,14 @@
                               <td>
                                 <!-- each row in this col is the diff of amount in paymaode -->
                                 <tr
-                                  v-for="(payAppData, ind) in ctgryData.Sft"
+                                  v-for="payAppData in ctgryData.Sft"
                                   :key="'Diff' + payAppData.name"
                                 >
                                   <td class="pay-app-diff-td">
-                                    <!-- {{ ind }}
-                                    {{ payAppData }} -->
-                                    {{ ctgryData.Sft[ind].value - ctgryData.Mgr[ind].value }}
+                                    {{
+                                      softwareSaleData[payAppData.name] -
+                                        managerSaleData[payAppData.name]
+                                    }}
                                   </td>
                                 </tr>
                               </td>
@@ -64,7 +77,9 @@
                           </template>
                           <template v-else>
                             <!-- (Only one row) is the diff of total amount in paymaode category -->
-                            <v-col :cols="1"> {{ ctgryData.Sft }}</v-col>
+                            <v-col :cols="1">
+                              {{ getCategoryDiff(ctgryData.Sft, ctgryData.Mgr) }}</v-col
+                            >
                           </template>
                         </v-row>
                       </v-container>
@@ -85,6 +100,19 @@ import axios from "axios";
 export default {
   name: "PaymentAppsLayout",
   methods: {
+    getCategoryDiff(sftPayCtgryData, mgrPayCtgryData) {
+      let sftCtgryTotal = 0;
+      let mgrCtgryTotal = 0;
+      let diff = 0;
+      for (let i = 0; i < sftPayCtgryData.length; i++) {
+        sftCtgryTotal += this.softwareSaleData[sftPayCtgryData[i].name];
+      }
+      for (let i = 0; i < mgrPayCtgryData.length; i++) {
+        mgrCtgryTotal += this.managerSaleData[mgrPayCtgryData[i].name];
+      }
+      diff = sftCtgryTotal - mgrCtgryTotal;
+      return diff;
+    },
     makeTableLayoutData() {
       let returnObj = {};
       this.layoutInfo.forEach(payMode => {
