@@ -1,46 +1,73 @@
 <template>
   <v-container>
     <template>
-      <div>
+      <div class="PaymentAppsLayout">
         <v-simple-table>
           <template v-slot:default>
-            <thead>
-              <tr>
-                <!-- <th class="text-left">Name</th>
-                <th class="text-left">SoftwareSale</th>
-                <th class="text-left">Name</th>
-                <th class="text-left">ManagerSale</th> -->
-              </tr>
-            </thead>
             <tbody>
-              <!-- for category name  -->
-              <tr v-for="ctgry in processedTableLayoutData" :key="ctgry.nm">
-                {{
-                  ctgry.nm
-                }}
-                <!--each to hold payment apps and respective info of each category -->
+              <!--each tr to hold payment apps and respective info of each category -->
+              <tr v-for="ctgryData in processedTableLayoutData" :key="ctgryData.nm">
                 <v-simple-table dense>
                   <template v-slot:default>
+                    <!-- <th dense>{{ ctgryData.nm }}</th> -->
                     <tbody>
-                      <!-- each td to hold software sale info each app-->
-                      <td>
-                        <tr v-for="payApp in ctgry.Sft" :key="'Sft' + payApp.name">
-                          <td>{{ payApp.display_name }}</td>
-                          <td>
-                            <v-text-field single-line :value="payApp.value"></v-text-field>
-                          </td>
-                        </tr>
-                      </td>
-
-                      <!-- each td to hold Manager sale info each app-->
-                      <td>
-                        <tr v-for="payApp in ctgry.Mgr" :key="'Mgr' + payApp.name">
-                          <td>{{ payApp.display_name }}</td>
-                          <td>
-                            <v-text-field single-line :value="payApp.value"></v-text-field>
-                          </td>
-                        </tr>
-                      </td>
+                      <v-container>
+                        <!-- each row is a container for each ctegory data -->
+                        <v-row no-gutters>
+                          <v-col :cols="6">
+                            <v-row no-gutters>
+                              <!-- each column td repesents Software sale and Manager sale respectively -->
+                              <v-col
+                                :cols="6"
+                                v-for="displayCol in ['Sft', 'Mgr']"
+                                :key="displayCol"
+                              >
+                                <!-- each td to hold software/Manager sale info each app-->
+                                <td>
+                                  <tr
+                                    v-for="payApp in ctgryData[displayCol]"
+                                    :key="displayCol + payApp.name"
+                                  >
+                                    <td class="text-left pay-app-name-td">
+                                      {{ payApp.display_name }}
+                                    </td>
+                                    <td class="pay-app-value-td">
+                                      <v-text-field
+                                        hide-details
+                                        dense
+                                        single-line
+                                        :value="payApp.value"
+                                      ></v-text-field>
+                                    </td>
+                                  </tr>
+                                </td>
+                              </v-col>
+                            </v-row>
+                          </v-col>
+                          <!-- this if/else section is to calaculate,render differnce -->
+                          <template v-if="ctgryData.nm === 'Generic'">
+                            <v-col :cols="1">
+                              <td>
+                                <!-- each row in this col is the diff of amount in paymaode -->
+                                <tr
+                                  v-for="(payAppData, ind) in ctgryData.Sft"
+                                  :key="'Diff' + payAppData.name"
+                                >
+                                  <td class="pay-app-diff-td">
+                                    <!-- {{ ind }}
+                                    {{ payAppData }} -->
+                                    {{ ctgryData.Sft[ind].value - ctgryData.Mgr[ind].value }}
+                                  </td>
+                                </tr>
+                              </td>
+                            </v-col>
+                          </template>
+                          <template v-else>
+                            <!-- (Only one row) is the diff of total amount in paymaode category -->
+                            <v-col :cols="1"> {{ ctgryData.Sft }}</v-col>
+                          </template>
+                        </v-row>
+                      </v-container>
                     </tbody>
                   </template>
                 </v-simple-table>
@@ -63,7 +90,7 @@ export default {
       this.layoutInfo.forEach(payMode => {
         var ctgry = payMode.category_nm;
         if (ctgry == null) {
-          ctgry = "Genric";
+          ctgry = "Generic";
         }
         returnObj[ctgry] = returnObj[ctgry] || { nm: ctgry, Mgr: [], Sft: [] };
 
@@ -121,3 +148,50 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.PaymentAppsLayout .v-text-field input {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  //background-color: none;
+}
+
+.PaymentAppsLayout .v-text-field {
+  border-style: none !important;
+}
+.PaymentAppsLayout .v-input__slot {
+  border-style: none !important;
+}
+
+.PaymentAppsLayout .v-input__control {
+  border-style: none !important;
+}
+
+.PaymentAppsLayout .v-text-field__slot {
+  border-style: none !important;
+}
+
+.PaymentAppsLayout .pay-app-value-td {
+  border-width: thin;
+  border-style: solid;
+  border-color: black;
+  width: 100px;
+  height: 30px;
+}
+
+.PaymentAppsLayout .pay-app-name-td {
+  border-width: thin;
+  border-style: solid;
+  border-color: black;
+  width: 140px;
+  height: 30px;
+}
+
+.PaymentAppsLayout .pay-app-diff-td {
+  border-width: thin;
+  border-style: solid;
+  border-color: black;
+  width: 140px;
+  height: 30px;
+}
+</style>
