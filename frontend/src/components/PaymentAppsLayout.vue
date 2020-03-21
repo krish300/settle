@@ -1,98 +1,114 @@
 <template>
-  <v-container>
-    <template>
-      <div class="PaymentAppsLayout">
-        <v-simple-table>
-          <template v-slot:default>
-            <tbody>
-              <!--each tr to hold payment apps and respective info of each category -->
-              <tr v-for="ctgryData in processedTableLayoutData" :key="ctgryData.nm">
-                <v-simple-table dense>
-                  <template v-slot:default>
-                    <!-- <th dense>{{ ctgryData.nm }}</th> -->
-                    <tbody>
-                      <v-container>
-                        <!-- each row is a container for each ctegory data -->
+  <div class="PaymentAppsLayout">
+    <v-simple-table>
+      <template v-slot:default>
+        <tbody>
+          <v-row>
+            <v-col>
+              <v-card color="primary"> </v-card>
+            </v-col>
+          </v-row>
+          <!--each tr to hold payment apps and respective info of each category -->
+          <tr v-for="ctgryData in processedTableLayoutData" :key="ctgryData.nm">
+            <v-simple-table dense>
+              <template v-slot:default>
+                <!-- <th dense>{{ ctgryData.nm }}</th> -->
+                <tbody>
+                  <v-container>
+                    <!-- each row is a container for each ctegory data -->
+                    <v-row no-gutters>
+                      <v-col :cols="6">
                         <v-row no-gutters>
+                          <!-- each column td repesents Software sale  -->
                           <v-col :cols="6">
-                            <v-row no-gutters>
-                              <!-- each column td repesents Software sale  -->
-                              <v-col :cols="6">
-                                <td>
-                                  <!-- each tr to hold software sale info each app-->
-                                  <tr v-for="payApp in ctgryData.Sft" :key="'Sft' + payApp.name">
-                                    <td class="text-left pay-app-name-td">
-                                      {{ payApp.display_name }}
-                                    </td>
-                                    <td class="pay-app-value-td">
-                                      <v-text-field
-                                        hide-details
-                                        dense
-                                        single-line
-                                        v-model="softwareSaleData[payApp.name]"
-                                      ></v-text-field>
-                                    </td>
-                                  </tr>
+                            <td>
+                              <!-- each tr to hold software sale info each app-->
+                              <tr
+                                v-for="payApp in ctgryData.Sft"
+                                :key="'Sft' + payApp.name"
+                                class="row-sale-app"
+                              >
+                                <td class="text-left pay-app-name-td">
+                                  {{ payApp.display_name }}
                                 </td>
-                              </v-col>
-                              <!-- each column td repesents Manager sale -->
-                              <v-col :cols="6">
-                                <td>
-                                  <!-- each tr to hold Manager sale info each app-->
-                                  <tr v-for="payApp in ctgryData.Mgr" :key="'Mgr' + payApp.name">
-                                    <td class="text-left pay-app-name-td">
-                                      {{ payApp.display_name }}
-                                    </td>
-                                    <td class="pay-app-value-td">
-                                      <v-text-field
-                                        hide-details
-                                        dense
-                                        single-line
-                                        v-model="managerSaleData[payApp.name]"
-                                      ></v-text-field>
-                                    </td>
-                                  </tr>
+                                <td class="pay-app-value-td">
+                                  <v-text-field
+                                    hide-details
+                                    dense
+                                    single-line
+                                    v-model="softwareSaleData[payApp.name]"
+                                  ></v-text-field>
                                 </td>
-                              </v-col>
-                            </v-row>
+                              </tr>
+                            </td>
                           </v-col>
-                          <!-- this if/else section is to calaculate,render differnce -->
-                          <template v-if="ctgryData.nm === 'Generic'">
-                            <v-col :cols="1">
-                              <td>
-                                <!-- each row in this col is the diff of amount in paymaode -->
-                                <tr
-                                  v-for="payAppData in ctgryData.Sft"
-                                  :key="'Diff' + payAppData.name"
-                                >
-                                  <td class="pay-app-diff-td">
-                                    {{
-                                      softwareSaleData[payAppData.name] -
-                                        managerSaleData[payAppData.name]
-                                    }}
-                                  </td>
-                                </tr>
-                              </td>
-                            </v-col>
-                          </template>
-                          <template v-else>
-                            <!-- (Only one row) is the diff of total amount in paymaode category -->
-                            <v-col :cols="1">
-                              {{ getCategoryDiff(ctgryData.Sft, ctgryData.Mgr) }}</v-col
-                            >
-                          </template>
+                          <!-- each column td repesents Manager sale -->
+                          <v-col :cols="6">
+                            <td>
+                              <!-- each tr to hold Manager sale info each app-->
+                              <tr
+                                v-for="payApp in ctgryData.Mgr"
+                                :key="'Mgr' + payApp.name"
+                                class="row-sale-app"
+                              >
+                                <td class="text-left pay-app-name-td">
+                                  {{ payApp.display_name }}
+                                </td>
+                                <td class="pay-app-value-td">
+                                  <v-text-field
+                                    hide-details
+                                    dense
+                                    single-line
+                                    v-model="managerSaleData[payApp.name]"
+                                  ></v-text-field>
+                                </td>
+                              </tr>
+                            </td>
+                          </v-col>
                         </v-row>
-                      </v-container>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </div>
-    </template>
-  </v-container>
+                      </v-col>
+                      <!-- this if/else section is to calaculate,render differnce -->
+                      <template v-if="ctgryData.nm === 'Generic'">
+                        <v-col :cols="1">
+                          <td>
+                            <!-- each row in this col is the diff of amount in paymaode -->
+                            <tr
+                              v-for="payAppData in ctgryData.Sft"
+                              :key="'Diff' + payAppData.name"
+                              class="row-sale-app"
+                            >
+                              <td class="pay-app-diff-td">
+                                {{
+                                  softwareSaleData[payAppData.name] -
+                                    managerSaleData[payAppData.name]
+                                }}
+                              </td>
+                            </tr>
+                          </td>
+                        </v-col>
+                      </template>
+                      <template v-else>
+                        <v-col :cols="1">
+                          <td>
+                            <!-- (Only one row) is the diff of total amount in paymaode category -->
+                            <tr class="row-sale-app">
+                              <td class="pay-app-diff-td">
+                                {{ getCategoryDiff(ctgryData.Sft, ctgryData.Mgr) }}
+                              </td>
+                            </tr>
+                          </td>
+                        </v-col>
+                      </template>
+                    </v-row>
+                  </v-container>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+  </div>
 </template>
 <script>
 import { mapState, Store } from "vuex";
@@ -204,22 +220,27 @@ export default {
   border-style: solid;
   border-color: black;
   width: 100px;
-  height: 30px;
+  // height: 32px;
 }
 
 .PaymentAppsLayout .pay-app-name-td {
   border-width: thin;
   border-style: solid;
   border-color: black;
-  width: 140px;
-  height: 30px;
+  width: 125px;
+  padding-left: 2px;
+  // height: 32px;
 }
 
 .PaymentAppsLayout .pay-app-diff-td {
   border-width: thin;
   border-style: solid;
   border-color: black;
-  width: 140px;
-  height: 30px;
+  width: 50px;
+  // height: 32px;
+}
+
+.PaymentAppsLayout .row-sale-app {
+  height: 28px;
 }
 </style>
