@@ -61,9 +61,9 @@
       </template> -->
     </v-app-bar>
     <!-- Sizes your content based upon application components -->
-    <v-content>
+    <v-content style="padding-top:0px;">
       <!-- Provides the application the proper gutter -->
-      <v-container fluid>
+      <v-container fluid dense>
         <!-- <EntriesGrid /> -->
         <component :is="viewName" />
         <!-- If using vue-router -->
@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import EntriesGrid from "@/components/EntriesGrid";
-import SaleSummary from "@/components/SaleSummary";
+import EntriesGrid from "./EntriesGrid";
+import SaleSummary from "./SaleSummary";
 
 export default {
   name: "Home",

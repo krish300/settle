@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 from jsonfield import JSONField
-from collections import OrderedDict
 
 
 class EntityType(models.Model):
@@ -119,10 +118,8 @@ class SaleSummary(models.Model):
         get_latest_by = '-date'
     settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
     date = models.DateField(unique=True)
-    software_data = JSONField(null=True, load_kwargs={
-                              'object_pairs_hook': OrderedDict})
-    manager_data = JSONField(null=True, load_kwargs={
-                             'object_pairs_hook': OrderedDict})
+    software_data = JSONField(null=True)
+    manager_data = JSONField(null=True)
     software_sale = models.PositiveIntegerField(null=False, blank=False)
     manager_sale = models.PositiveIntegerField(null=False, blank=False)
     software_discount = models.PositiveIntegerField(null=False, blank=False)
