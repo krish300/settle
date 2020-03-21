@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 from jsonfield import JSONField
-from collections import OrderedDict
 
 
 class EntityType(models.Model):
@@ -51,7 +50,7 @@ class EntryCategory(models.Model):
 
 
 class Entry(models.Model):
-    
+
     class Meta:
         ordering = ['-date', 'type']
 
@@ -76,6 +75,7 @@ class Entry(models.Model):
     mode = models.CharField(
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
+    amout = models.PositiveIntegerField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=50, null=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -92,7 +92,7 @@ class Settlement(models.Model):
     is_closed = models.BooleanField(default=False)
     closed_by = models.CharField(max_length=50, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    last_modified = models.DateTimeField(auto_now=True)    
+    last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=True)
 
@@ -118,10 +118,8 @@ class SaleSummary(models.Model):
         get_latest_by = '-date'
     settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
     date = models.DateField(unique=True)
-    software_data = JSONField(null=True, load_kwargs={
-                              'object_pairs_hook': OrderedDict})
-    manager_data = JSONField(null=True, load_kwargs={
-                             'object_pairs_hook': OrderedDict})
+    software_data = JSONField(null=True)
+    manager_data = JSONField(null=True)
     software_sale = models.PositiveIntegerField(null=False, blank=False)
     manager_sale = models.PositiveIntegerField(null=False, blank=False)
     software_discount = models.PositiveIntegerField(null=False, blank=False)
@@ -153,11 +151,13 @@ class PaymentMode(models.Model):
         ('BOTH', 'SaleSummary: Manager & Software Columns'),
     )
     name = models.CharField(max_length=50, unique=True)
+    display_name = models.CharField(max_length=50, unique=True)
     display_in = models.CharField(max_length=10, choices=ENTRY_TYPE_CHOICES)
-    category = models.ForeignKey("PaymentModeCategory", on_delete=models.PROTECT, null=True)
+    category = models.ForeignKey(
+        "PaymentModeCategory", on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return self.display_name
