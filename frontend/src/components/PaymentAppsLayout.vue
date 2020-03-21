@@ -3,18 +3,30 @@
     <v-simple-table>
       <template v-slot:default>
         <tbody>
-          <v-row>
-            <v-col>
-              <v-card color="primary"> </v-card>
+          <v-row class="salesummary-heading" no-gutters>
+            <v-col :cols="7">
+              <v-card color="blue-grey lighten-4">
+                <v-row no-gutters>
+                  <v-col :cols="5"> Software </v-col>
+                  <v-col :cols="5">
+                    Cashier
+                  </v-col>
+                  <v-col :cols="2">
+                    Differance
+                  </v-col>
+                </v-row>
+              </v-card>
             </v-col>
           </v-row>
+
           <!--each tr to hold payment apps and respective info of each category -->
           <tr v-for="ctgryData in processedTableLayoutData" :key="ctgryData.nm">
             <v-simple-table dense>
               <template v-slot:default>
-                <!-- <th dense>{{ ctgryData.nm }}</th> -->
+                <!-- <th dense>{{ ctgryData.nm }}</th>
+                <v-container class="salesummary-heading" dense>{{ ctgryData.nm }} </v-container> -->
                 <tbody>
-                  <v-container>
+                  <v-container class="category-container">
                     <!-- each row is a container for each ctegory data -->
                     <v-row no-gutters>
                       <v-col :cols="6">
@@ -200,18 +212,7 @@ export default {
   //background-color: none;
 }
 
-.PaymentAppsLayout .v-text-field {
-  border-style: none !important;
-}
-.PaymentAppsLayout .v-input__slot {
-  border-style: none !important;
-}
-
-.PaymentAppsLayout .v-input__control {
-  border-style: none !important;
-}
-
-.PaymentAppsLayout .v-text-field__slot {
+.PaymentAppsLayout .v-input__slot:before {
   border-style: none !important;
 }
 
@@ -242,5 +243,21 @@ export default {
 
 .PaymentAppsLayout .row-sale-app {
   height: 28px;
+}
+
+.category-container {
+  padding-top: 0px !important;
+  padding-left: 0px !important;
+  padding-bottom: 2px !important;
+  border-bottom: 0.3px;
+  border-bottom-style: solid;
+}
+
+.salesummary-heading .col {
+  padding-bottom: 0;
+}
+
+.salesummary-heading {
+  padding-bottom: 3px;
 }
 </style>
