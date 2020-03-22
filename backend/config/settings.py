@@ -118,6 +118,8 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DATE_FORMAT': ['%d-%m-%Y'],
+    'DATE_INPUT_FORMATS': ['%d-%m-%Y', 'iso-8601']
 }
 # FIXME(kt): remove later
 if not DEBUG:
