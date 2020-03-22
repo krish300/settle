@@ -83,6 +83,7 @@
 </template>
 <script>
 import axios from "axios";
+import { mapState, Store } from "vuex";
 export default {
   name: "EntriesGrid",
   components: {},
@@ -176,6 +177,9 @@ export default {
       .catch(error => {
         console.log("error while fetching entry-category", error);
       });
+  },
+  computed: {
+    ...mapState(["totalCashExpense"])
   }
 };
 </script>
