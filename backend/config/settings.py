@@ -144,3 +144,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 WHITENOISE_INDEX_FILE = True
 WHITENOISE_ROOT = os.path.join(API_DIR, 'front-app')
+
+CSRF_COOKIE_NAME = "XSRF-TOKEN"
