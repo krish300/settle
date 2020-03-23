@@ -67,9 +67,8 @@ export default {
           .then(response => {
             this.invalidUser = false;
             //this.currentUserInfo = response.data;
-            this.$store.commit("setCurentUserInfo", response.data);
+            this.$store.commit("setCurrentUserInfo", response.data);
             if (this.invalidUser) {
-              console.log("inside for invalid user", this.invalidUser);
               // reset the form
               // display error message
               this.password = "";
