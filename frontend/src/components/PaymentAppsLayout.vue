@@ -5,7 +5,7 @@
         <tbody>
           <v-row class="salesummary-heading" no-gutters>
             <v-col :cols="7">
-              <v-card color="blue-grey lighten-4">
+              <v-card color="teal ligten-1">
                 <v-row no-gutters>
                   <v-col :cols="5"> Software </v-col>
                   <v-col :cols="5">

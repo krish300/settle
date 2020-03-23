@@ -10,13 +10,17 @@ export default new Vuex.Store({
     //FIXME(kt): remove hardcode
     settlementId: "340d7515-4e3a-4d5e-a11e-0219bed065d0",
     totalCashExpense: 0,
+    totalExpense: 0,
     currentUserInfo: {}
   },
   mutations: {
     setCurrentUserInfo(state, d) {
       state.currentUserInfo = d;
     },
-    updatetotalCashExpense(state, exp) {
+    setTotalExpense(state, exp) {
+      state.totalExpense = exp;
+    },
+    setTotalCashExpense(state, exp) {
       state.totalCashExpense = exp;
     }
   },

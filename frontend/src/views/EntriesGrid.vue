@@ -3,8 +3,8 @@
     <v-alert type="error" v-show="addEntryError" dismissible>
       {{ alertErrorMessage }}
     </v-alert>
-    <v-form ref="addEntryForm" v-model="valid" lazy-validation dense>
-      <v-row class="text-center">
+    <v-form ref="addEntryForm" v-model="valid" lazy-validation>
+      <v-row class="text-center" dense>
         <v-col cols="2">
           <v-autocomplete
             v-model="selectedCategory"
@@ -77,6 +77,13 @@
         </tr>
       </template>
     </v-data-table>
+    <v-row dense>
+      <v-col class="text-center"></v-col>
+      <v-col class="text-center"
+        ><v-card color="teal lighten-1">Total Cash Expenses: {{ this.totalCashExpense }} </v-card>
+      </v-col>
+      <v-col class="text-center">Total Expenses: {{ this.totalExpense }} </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
@@ -216,8 +223,29 @@ export default {
       });
   },
   computed: {
-    ...mapState(["totalCashExpense", "settlementId", "currentUserName", "settlementDate"]),
+    ...mapState([
+      "totalCashExpense",
+      "totalExpense",
+      "settlementId",
+      "currentUserName",
+      "settlementDate"
+    ]),
     ...mapGetters(["currentUserName"])
+  },
+  watch: {
+    // whenever cashOutRecords changes, this function will run
+    cashOutRecords: function(newCashOutRecords) {
+      let totalExpense = 0;
+      let totalCashExpense = 0;
+      newCashOutRecords.forEach(cashOut => {
+        if (cashOut.mode === "CA") {
+          totalCashExpense += cashOut.amount;
+        }
+        totalExpense += cashOut.amount;
+      });
+      this.$store.commit("setTotalExpense", totalExpense);
+      this.$store.commit("setTotalCashExpense", totalCashExpense);
+    }
   }
 };
 </script>
