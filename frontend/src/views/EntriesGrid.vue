@@ -15,6 +15,7 @@
             v-on:change="catgeorySelection"
             item-text="name"
             item-value="id"
+            cache-items
           ></v-autocomplete>
         </v-col>
         <v-col cols="2">
@@ -27,6 +28,7 @@
             return-object
             item-text="name"
             item-value="id"
+            :menu-props="menuProps"
           ></v-autocomplete>
         </v-col>
         <v-col cols="1">
@@ -36,6 +38,7 @@
             :rules="[v => !!v || 'Mode  is required']"
             label="Select"
             v-on:change="modeSelection"
+            cache-items
           ></v-autocomplete>
         </v-col>
         <v-col cols="2">
@@ -198,6 +201,15 @@ export default {
         },
         { text: "Action", vlaue: "action", align: "center", sortable: false }
       ],
+      menuProps: {
+        closeOnClick: false,
+        closeOnContentClick: false,
+        disableKeys: true,
+        openOnClick: false,
+        maxHeight: 304,
+        auto: true,
+        dense: true
+      },
       cashOutRecord: {},
       cashOutRecords: []
     };
