@@ -1,22 +1,25 @@
 <template>
   <v-container>
-    <v-form ref="form" v-model="valid" lazy-validation>
-      <v-row class="text-center">
+    <v-alert type="error" v-show="addEntryError" dismissible>
+      {{ alertErrorMessage }}
+    </v-alert>
+    <v-form ref="addEntryForm" v-model="valid" lazy-validation>
+      <v-row class="text-center" dense>
         <v-col cols="2">
           <v-autocomplete
-            :key="selectedCategory"
             v-model="selectedCategory"
-            :items="categoryOptions"
+            :items="entryCategoryOptions"
             return-object
             :rules="[v => !!v || 'Category is required']"
             label="Select Option"
             v-on:change="catgeorySelection"
             item-text="name"
+            item-value="id"
+            cache-items
           ></v-autocomplete>
         </v-col>
         <v-col cols="2">
           <v-autocomplete
-            :key="entitySelected"
             v-model="entitySelected"
             :items="entityOptions"
             :rules="[v => !!v || 'Entity is required']"
@@ -24,23 +27,25 @@
             v-on:change="entitySelection"
             return-object
             item-text="name"
+            item-value="id"
+            :menu-props="menuProps"
           ></v-autocomplete>
         </v-col>
         <v-col cols="1">
           <v-autocomplete
-            :key="modeSelected"
             v-model="modeSelected"
             :items="mode"
             :rules="[v => !!v || 'Mode  is required']"
             label="Select"
             v-on:change="modeSelection"
+            cache-items
           ></v-autocomplete>
         </v-col>
         <v-col cols="2">
           <v-text-field
             type="number"
-            v-model="price"
-            :rules="[v => !!v || 'Price  is required']"
+            v-model="enteredAmount"
+            :rules="[v => !!v || 'Amount  is required']"
             label="Amount"
             aria-required="true"
             clearable
@@ -48,9 +53,9 @@
         </v-col>
         <v-col cols="3">
           <v-text-field
-            v-model="description"
-            :rules="[v => !!v || 'Description  is required']"
-            label="Description"
+            v-model="enteredComment"
+            :rules="[v => !!v || 'Comment  is required']"
+            label="Comment"
             clearable
           ></v-text-field>
         </v-col>
@@ -62,34 +67,38 @@
       </v-row>
     </v-form>
 
-    <v-data-table :headers="headers" :items="cashOutRecords">
+    <v-data-table :headers="headers" :items="cashOutRecords" item-key="id" dense>
       <template v-slot:item="row">
         <tr>
-          <td>{{ row.item.expenceCategory }}</td>
-          <td>{{ row.item.entity }}</td>
-          <td>{{ row.item.description }}</td>
-          <td>{{ row.item.price }}</td>
+          <td>{{ row.item.expense_category }}</td>
+          <td>{{ row.item.entity_name }}</td>
+          <td>{{ row.item.amount }}</td>
+          <td>{{ row.item.comment }}</td>
           <td>
-            <v-btn small fab @click="deleteItem(row.item)">
-              <span class="group pa-2">
-                <v-icon>delete</v-icon>
-              </span>
-            </v-btn>
+            <v-icon small color="red" dense @click="deleteItem(row.item)"> delete </v-icon>
           </td>
         </tr>
       </template>
     </v-data-table>
+    <v-row dense>
+      <v-col class="text-center"></v-col>
+      <v-col class="text-center"
+        ><v-card color="teal lighten-1">Total Cash Expenses: {{ this.totalCashExpense }} </v-card>
+      </v-col>
+      <v-col class="text-center">Total Expenses: {{ this.totalExpense }} </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
 import axios from "axios";
+import { mapState, mapGetters, Store } from "vuex";
 export default {
   name: "EntriesGrid",
   components: {},
   methods: {
     catgeorySelection(data) {
       this.cashOutRecord = {};
-      this.cashOutRecord.category = data;
+      this.cashOutRecord.category = data.id;
       axios
         .get(`${process.env.VUE_APP_SERVER_URL}/api/entity/?type=${data.entity_type}`)
         .then(response => {
@@ -102,7 +111,7 @@ export default {
         });
     },
     entitySelection(data) {
-      this.cashOutRecord.entity = data.name;
+      this.cashOutRecord.entity = data.id;
       this.cashOutRecord.expenceCategory = data.expense_category;
     },
     modeSelection(data) {
@@ -115,37 +124,66 @@ export default {
       }
     },
     addRow() {
-      if (this.$refs.form.validate()) {
-        this.cashOutRecord.price = this.price;
-        this.cashOutRecord.description = this.description;
-        this.cashOutRecords.push(this.cashOutRecord);
-        this.resetModels();
+      if (this.$refs.addEntryForm.validate()) {
+        this.cashOutRecord.amount = this.enteredAmount;
+        this.cashOutRecord.comment = this.enteredComment;
+        this.cashOutRecord.date = this.settlementDate;
+        this.cashOutRecord.settlement = this.settlementId;
+        this.cashOutRecord.created_by = this.currentUserName;
+        axios({
+          method: "POST",
+          url: `${process.env.VUE_APP_SERVER_URL}/api/entry/`,
+          data: this.cashOutRecord
+        })
+          .then(response => {
+            this.$refs.addEntryForm.reset();
+            //this.$refs.addEntryForm.resetValidation();
+            this.cashOutRecords.push(response.data);
+          })
+          .catch(error => {
+            this.alertErrorMessage = "error while adding the entry please call admin.";
+            this.addEntryError = true;
+            console.log("error while creating an entry", error);
+          });
       }
     },
-    resetModels() {
-      this.selectedCategory = null;
-      this.entitySelected = "";
-      this.modeSelected = "";
-      this.price = "";
-      this.description = "";
-    },
-    deleteItem(item) {
-      console.log("item delete", item);
+    deleteItem(entry) {
+      axios({
+        method: "DELETE",
+        url: `${process.env.VUE_APP_SERVER_URL}/api/entry/${entry.id}/`,
+        xsrfHeaderName: "X-CSRFToken"
+      })
+        .then(response => {
+          const ind = this.cashOutRecords.indexOf(entry);
+          this.cashOutRecords.splice(ind, 1);
+        })
+        .catch(error => {
+          this.alertErrorMessage = "error while deleting the entry please call admin.";
+          this.addEntryError = true;
+          console.log("error while deleting the entry", error);
+        });
     }
   },
   data() {
     return {
+      //settlementId: null,
       valid: true,
       selectedCategory: "",
       entitySelected: "",
       modeSelected: null,
-      price: null,
-      description: null,
-      categoryOptions: [],
+      enteredAmount: null,
+      enteredComment: null,
+      entryCategoryOptions: [],
       entityOptions: [],
       showSubCategory: false,
       displayAdd: false,
-      mode: ["CA", "AC", "TR"],
+      addEntryError: false,
+      alertErrorMessage: "",
+      mode: [
+        { value: "CA", text: "CASH" },
+        { value: "AC", text: "ACCOUNT" },
+        { value: "TR", text: "TRESSURE" }
+      ],
       headers: [
         {
           text: "Expence Category",
@@ -154,15 +192,24 @@ export default {
           sortable: true
         },
         { text: "Entity", value: "entity", align: "center", sortable: false },
+        { text: "Amount", value: "amount", align: "center", sortable: false },
         {
-          text: "Description",
-          value: "description",
+          text: "Comment",
+          value: "comment",
           align: "center",
           sortable: false
         },
-        { text: "Amount", value: "price", align: "center", sortable: false },
         { text: "Action", vlaue: "action", align: "center", sortable: false }
       ],
+      menuProps: {
+        closeOnClick: false,
+        closeOnContentClick: false,
+        disableKeys: true,
+        openOnClick: false,
+        maxHeight: 304,
+        auto: true,
+        dense: true
+      },
       cashOutRecord: {},
       cashOutRecords: []
     };
@@ -171,11 +218,46 @@ export default {
     axios
       .get(`${process.env.VUE_APP_SERVER_URL}/api/entry-category/`)
       .then(response => {
-        this.categoryOptions = response.data;
+        this.entryCategoryOptions = response.data;
       })
       .catch(error => {
         console.log("error while fetching entry-category", error);
       });
+  },
+  mounted() {
+    axios
+      .get(`${process.env.VUE_APP_SERVER_URL}/api/entry/?settlement=${this.settlementId}`)
+      .then(response => {
+        this.cashOutRecords = response.data;
+      })
+      .catch(error => {
+        console.log("error while fetching existing entries", error);
+      });
+  },
+  computed: {
+    ...mapState([
+      "totalCashExpense",
+      "totalExpense",
+      "settlementId",
+      "currentUserName",
+      "settlementDate"
+    ]),
+    ...mapGetters(["currentUserName"])
+  },
+  watch: {
+    // whenever cashOutRecords changes, this function will run
+    cashOutRecords: function(newCashOutRecords) {
+      let totalExpense = 0;
+      let totalCashExpense = 0;
+      newCashOutRecords.forEach(cashOut => {
+        if (cashOut.mode === "CA") {
+          totalCashExpense += cashOut.amount;
+        }
+        totalExpense += cashOut.amount;
+      });
+      this.$store.commit("setTotalExpense", totalExpense);
+      this.$store.commit("setTotalCashExpense", totalCashExpense);
+    }
   }
 };
 </script>

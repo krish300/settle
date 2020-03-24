@@ -5,12 +5,31 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    settlementDate: "",
+    //FIXME(kt): remove hardcode
+    settlementDate: "15-03-2020",
+    //FIXME(kt): remove hardcode
+    settlementId: "340d7515-4e3a-4d5e-a11e-0219bed065d0",
+    totalCashExpense: 0,
+    totalExpense: 0,
     currentUserInfo: {}
   },
   mutations: {
-    setCurentUserInfo(state, d) {
+    setCurrentUserInfo(state, d) {
       state.currentUserInfo = d;
+    },
+    setTotalExpense(state, exp) {
+      state.totalExpense = exp;
+    },
+    setTotalCashExpense(state, exp) {
+      state.totalCashExpense = exp;
+    }
+  },
+  getters: {
+    currentUserName(state) {
+      if (state.currentUserInfo.username == undefined) {
+        return "NA";
+      }
+      return state.currentUserInfo.username;
     }
   },
   actions: {},

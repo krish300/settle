@@ -75,7 +75,7 @@ class Entry(models.Model):
     mode = models.CharField(
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
-    amout = models.PositiveIntegerField(null=False, blank=False)
+    amount = models.PositiveIntegerField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=50, null=True)
     last_modified = models.DateTimeField(auto_now=True)

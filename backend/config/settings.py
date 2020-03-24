@@ -118,6 +118,8 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DATE_FORMAT': ['%d-%m-%Y'],
+    'DATE_INPUT_FORMATS': ['%d-%m-%Y', 'iso-8601']
 }
 # FIXME(kt): remove later
 if not DEBUG:
@@ -142,3 +144,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 WHITENOISE_INDEX_FILE = True
 WHITENOISE_ROOT = os.path.join(API_DIR, 'front-app')
+
+CSRF_COOKIE_NAME = "XSRF-TOKEN"
