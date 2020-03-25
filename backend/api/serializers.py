@@ -40,13 +40,6 @@ class SettlementSerializer(serializers.ModelSerializer):
         extra_kwargs = {'date': {'format': '%d-%m-%Y'}}
 
 
-class CashDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.CashDetails
-        fields = '__all__'
-        extra_kwargs = {'date': {'format': '%d-%m-%Y'}}
-
-
 class SaleSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SaleSummary
@@ -56,6 +49,7 @@ class SaleSummarySerializer(serializers.ModelSerializer):
 
 class PaymentModeSerializer(serializers.ModelSerializer):
     category_nm = serializers.CharField(source='category', read_only=True)
+
     class Meta:
         model = models.PaymentMode
         fields = '__all__'
