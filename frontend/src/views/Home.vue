@@ -44,9 +44,11 @@
           <v-text-field
             v-model="date"
             prepend-inner-icon="event"
-            hide-details="true"
+            hide-details="auto"
             readonly
+            dense
             v-on="on"
+            class="datePickerTxtField"
           ></v-text-field>
         </template>
         <v-date-picker v-model="date" type="date" scrollable>
@@ -89,7 +91,7 @@ export default {
     drawer: false,
     clipped: true,
     viewName: "EntriesGrid",
-    date: new Date().toISOString().substr(0, 7),
+    date: new Date().toISOString().substr(0, 10),
     modal: false,
     //extendedCalander: false,
     links: [
@@ -115,3 +117,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.datePickerTxtField {
+  max-width: 130px !important;
+}
+</style>

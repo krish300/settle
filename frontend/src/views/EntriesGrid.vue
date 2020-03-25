@@ -133,7 +133,8 @@ export default {
         axios({
           method: "POST",
           url: `${process.env.VUE_APP_SERVER_URL}/api/entry/`,
-          data: this.cashOutRecord
+          data: this.cashOutRecord,
+          xsrfHeaderName: "X-CSRFToken"
         })
           .then(response => {
             this.$refs.addEntryForm.reset();
