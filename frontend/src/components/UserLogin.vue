@@ -62,7 +62,8 @@ export default {
           method: "POST",
           url: `${process.env.VUE_APP_SERVER_URL}/api/auth/login/`,
           data: creds,
-          headers: { "Content-Type": "multipart/form-data" }
+          headers: { "Content-Type": "multipart/form-data" },
+          xsrfHeaderName: "X-CSRFToken"
         })
           .then(response => {
             this.invalidUser = false;
