@@ -8,7 +8,7 @@ from . import serializers
 
 class Base:
     filter_backends = (DjangoFilterBackend,)
-    #FIXME(kt): temporaray disable of auth
+    # FIXME(kt): temporaray disable of auth
     #permission_classes = (IsAuthenticated,)
 
 
@@ -40,12 +40,6 @@ class SettlementViewSet(Base, ModelViewSet):
     queryset = models.Settlement.objects.all()
     serializer_class = serializers.SettlementSerializer
     filter_fields = ('date', 'name')
-
-
-class CashDetailsViewSet(Base, ModelViewSet):
-    queryset = models.CashDetails.objects.all()
-    serializer_class = serializers.CashDetailsSerializer
-    filter_fields = ('date',)
 
 
 class SaleSummaryViewSet(Base, ModelViewSet):

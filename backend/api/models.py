@@ -100,18 +100,6 @@ class Settlement(models.Model):
         return self.name
 
 
-class CashDetails(models.Model):
-    class Meta:
-        ordering = ['-date']
-        get_latest_by = '-date'
-    date = models.DateField(unique=True)
-    opening_cash = models.PositiveIntegerField(null=False, blank=False)
-    closing_cash = models.PositiveIntegerField(null=False, blank=False)
-
-    def __str__(self):
-        return f"CashDetails-{self.date}"
-
-
 class SaleSummary(models.Model):
     class Meta:
         ordering = ['-date']
