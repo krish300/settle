@@ -3,10 +3,10 @@
     <v-simple-table>
       <template v-slot:default>
         <tbody>
-          <v-row class="salesummary-heading" no-gutters>
+          <v-row class="salesummary-heading" :elevation="5">
             <v-col :cols="7">
-              <v-card color="teal ligten-1">
-                <v-row no-gutters>
+              <v-sheet color="teal ligten-1" class="white--text font-weight-bold" :elevation="5">
+                <v-row>
                   <v-col :cols="5"> Software </v-col>
                   <v-col :cols="5">
                     Cashier
@@ -15,7 +15,7 @@
                     Differance
                   </v-col>
                 </v-row>
-              </v-card>
+              </v-sheet>
             </v-col>
           </v-row>
 
@@ -117,15 +117,19 @@
               </template>
             </v-simple-table>
           </tr>
-          <tr>
-            <v-container class="category-container">
-              <v-row>
-                <v-col :cols="3">Total: {{ softwareSale }}</v-col>
-                <v-col :cols="3">Total: {{ managerSale }}</v-col>
-                <v-col :cols="1">{{ softwareSale - managerSale }}</v-col>
-              </v-row>
-            </v-container>
-          </tr>
+          <v-row class="totals-bar">
+            <v-col :cols="7">
+              <v-sheet color="teal ligten-1" class="white--text font-weight-bold" :elevation="5">
+                <v-row>
+                  <v-col :cols="5"> Total: {{ softwareSale }} </v-col>
+                  <v-col :cols="5"> Total: {{ managerSale }} </v-col>
+                  <v-col :cols="2">
+                    {{ softwareSale - managerSale }}
+                  </v-col>
+                </v-row>
+              </v-sheet>
+            </v-col>
+          </v-row>
         </tbody>
       </template>
     </v-simple-table>
@@ -260,6 +264,7 @@ export default {
   border-color: black;
   width: 125px;
   padding-left: 2px;
+  background-color: bisque;
   // height: 32px;
 }
 
@@ -279,15 +284,15 @@ export default {
   padding-top: 0px !important;
   padding-left: 0px !important;
   padding-bottom: 2px !important;
-  border-bottom: 0.3px;
-  border-bottom-style: solid;
+  //border-bottom: 0.3px;
+  //border-bottom-style: solid;
 }
 
-.salesummary-heading .col {
-  padding-bottom: 0;
+.v-data-table__wrapper {
+  overflow-x: hidden !important;
 }
 
-.salesummary-heading {
-  padding-bottom: 3px;
+.totals-bar {
+  text-decoration-color: white;
 }
 </style>
