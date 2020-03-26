@@ -243,7 +243,6 @@ export default {
 .PaymentAppsLayout .v-text-field input {
   padding-top: 0px;
   padding-bottom: 0px;
-  //background-color: none;
 }
 
 .PaymentAppsLayout .v-input__slot:before {
@@ -255,7 +254,6 @@ export default {
   border-style: solid;
   border-color: black;
   width: 100px;
-  // height: 32px;
 }
 
 .PaymentAppsLayout .pay-app-name-td {
@@ -265,7 +263,6 @@ export default {
   width: 125px;
   padding-left: 2px;
   background-color: bisque;
-  // height: 32px;
 }
 
 .PaymentAppsLayout .pay-app-diff-td {
@@ -273,7 +270,6 @@ export default {
   border-style: solid;
   border-color: black;
   width: 50px;
-  // height: 32px;
 }
 
 .PaymentAppsLayout .row-sale-app {
@@ -284,15 +280,9 @@ export default {
   padding-top: 0px !important;
   padding-left: 0px !important;
   padding-bottom: 2px !important;
-  //border-bottom: 0.3px;
-  //border-bottom-style: solid;
 }
 
 .v-data-table__wrapper {
   overflow-x: hidden !important;
-}
-
-.totals-bar {
-  text-decoration-color: white;
 }
 </style>
