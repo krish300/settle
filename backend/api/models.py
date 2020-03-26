@@ -54,10 +54,10 @@ class Entry(models.Model):
     class Meta:
         ordering = ['-date', 'type']
 
-    DEFAULT_ENTRY_TYPE = 'CR'
+    DEFAULT_ENTRY_TYPE = 'DE'
     ENTRY_TYPE_CHOICES = (
-        (DEFAULT_ENTRY_TYPE, 'CREDIT'),
-        ('DE', 'DEBIT'),
+        (DEFAULT_ENTRY_TYPE, 'DEBIT'),
+        ('CR', 'CREDIT'),
     )
     DEFAULT_MODE = 'CA'
     MODE_CHOICES = (

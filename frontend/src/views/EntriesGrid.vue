@@ -140,6 +140,7 @@ export default {
             this.$refs.addEntryForm.reset();
             //this.$refs.addEntryForm.resetValidation();
             this.cashOutRecords.push(response.data);
+            this.updateTotalExpenses();
           })
           .catch(error => {
             this.alertErrorMessage = "error while adding the entry please call admin.";
@@ -157,11 +158,23 @@ export default {
         .then(response => {
           const ind = this.cashOutRecords.indexOf(entry);
           this.cashOutRecords.splice(ind, 1);
+          this.updateTotalExpenses();
         })
         .catch(error => {
           this.alertErrorMessage = "error while deleting the entry please call admin.";
           this.addEntryError = true;
           console.log("error while deleting the entry", error);
+        });
+    },
+    updateTotalExpenses() {
+      axios
+        .get(`${process.env.VUE_APP_SERVER_URL}/api/settlement/${this.settlementId}/`)
+        .then(response => {
+          this.$store.commit("setTotalExpense", response.data.expense);
+          this.$store.commit("setTotalCashExpense", response.data.cash_expense);
+        })
+        .catch(error => {
+          console.log("error while fetching settlment data", error);
         });
     }
   },
@@ -244,21 +257,6 @@ export default {
       "settlementDate"
     ]),
     ...mapGetters(["currentUserName"])
-  },
-  watch: {
-    // whenever cashOutRecords changes, this function will run
-    cashOutRecords: function(newCashOutRecords) {
-      let totalExpense = 0;
-      let totalCashExpense = 0;
-      newCashOutRecords.forEach(cashOut => {
-        if (cashOut.mode === "CA") {
-          totalCashExpense += cashOut.amount;
-        }
-        totalExpense += cashOut.amount;
-      });
-      this.$store.commit("setTotalExpense", totalExpense);
-      this.$store.commit("setTotalCashExpense", totalCashExpense);
-    }
   }
 };
 </script>
