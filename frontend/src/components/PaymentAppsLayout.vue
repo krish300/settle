@@ -182,8 +182,6 @@ export default {
     return {
       layoutInfo: [],
       processedTableLayoutData: {},
-      //FIXME(kt): remove hardcode
-      settlemenId: "340d7515-4e3a-4d5e-a11e-0219bed065d0",
       softwareSaleData: {},
       managerSaleData: {},
       softwareSale: 0,
@@ -197,7 +195,9 @@ export default {
       .then(response => {
         this.layoutInfo = response.data;
         axios
-          .get(`${process.env.VUE_APP_SERVER_URL}/api/sale-summary/?settlement=${this.settlemenId}`)
+          .get(
+            `${process.env.VUE_APP_SERVER_URL}/api/sale-summary/?settlement=${this.settlementId}`
+          )
           .then(response => {
             this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
             this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
@@ -215,7 +215,7 @@ export default {
       });
   },
   computed: {
-    ...mapState(["currentUserInfo"])
+    ...mapState(["currentUserInfo", "settlementId"])
   },
   watch: {
     // whenever softwareSaleData changes(deep watch), this handler will run
