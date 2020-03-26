@@ -117,6 +117,15 @@
               </template>
             </v-simple-table>
           </tr>
+          <tr>
+            <v-container class="category-container">
+              <v-row>
+                <v-col :cols="3">Total: {{ softwareSale }}</v-col>
+                <v-col :cols="3">Total: {{ managerSale }}</v-col>
+                <v-col :cols="1">{{ softwareSale - managerSale }}</v-col>
+              </v-row>
+            </v-container>
+          </tr>
         </tbody>
       </template>
     </v-simple-table>
@@ -176,7 +185,10 @@ export default {
       //FIXME(kt): remove hardcode
       settlemenId: "340d7515-4e3a-4d5e-a11e-0219bed065d0",
       softwareSaleData: {},
-      managerSaleData: {}
+      managerSaleData: {},
+      softwareSale: 0,
+      managerSale: 0,
+      discount: 0
     };
   },
   created() {
@@ -189,6 +201,9 @@ export default {
           .then(response => {
             this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
             this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
+            this.softwareSale = response.data[0].software_sale;
+            this.managerSale = response.data[0].manager_sale;
+            this.discount = response.data[0].software_discount;
             this.makeTableLayoutData();
           })
           .catch(error => {
@@ -201,6 +216,21 @@ export default {
   },
   computed: {
     ...mapState(["currentUserInfo"])
+  },
+  watch: {
+    // whenever softwareSaleData changes(deep watch), this handler will run
+    softwareSaleData: {
+      deep: true,
+      handler(softwareSaleData) {
+        this.softwareSale = Object.values(softwareSaleData).reduce((a, b) => Number(a) + Number(b));
+      }
+    },
+    managerSaleData: {
+      deep: true,
+      handler(managerSaleData) {
+        this.managerSale = Object.values(managerSaleData).reduce((a, b) => Number(a) + Number(b));
+      }
+    }
   }
 };
 </script>
