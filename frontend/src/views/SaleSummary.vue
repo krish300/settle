@@ -53,6 +53,7 @@
                                           </td>
                                           <td class="pay-app-value-td">
                                             <v-text-field
+                                              type="number"
                                               hide-details
                                               dense
                                               single-line
@@ -76,6 +77,7 @@
                                           </td>
                                           <td class="pay-app-value-td">
                                             <v-text-field
+                                              type="number"
                                               hide-details
                                               dense
                                               single-line
