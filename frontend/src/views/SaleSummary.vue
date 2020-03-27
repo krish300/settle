@@ -57,6 +57,7 @@
                                               hide-details
                                               dense
                                               single-line
+                                              :ref="'Sft-' + payApp.name + '-Value'"
                                               v-model="softwareSaleData[payApp.name]"
                                             ></v-text-field>
                                           </td>
@@ -81,6 +82,7 @@
                                               hide-details
                                               dense
                                               single-line
+                                              :ref="'Mgr-' + payApp.name + '-Value'"
                                               v-model="managerSaleData[payApp.name]"
                                             ></v-text-field>
                                           </td>
@@ -322,8 +324,14 @@ export default {
         console.log("error while fetching settlment data", error);
       });
   },
+  mounted() {
+    setTimeout(() => {
+      // executed after render + 2sec
+      this.$refs["Mgr-Cash-Value"][0].readonly = true;
+    }, 2000);
+  },
   computed: {
-    ...mapState(["currentUserInfo", "settlementId"])
+    ...mapState(["currentUserInfo", "settlementId", "totalCashExpense"])
   },
   watch: {
     // whenever softwareSaleData changes(deep watch), this handler will run
