@@ -94,7 +94,7 @@ class Settlement(models.Model):
     cash_expense = models.PositiveIntegerField(default=0)
     expense = models.PositiveIntegerField(default=0)
     is_closed = models.BooleanField(default=False)
-    closed_by = models.CharField(max_length=50, null=True)
+    closed_by = models.CharField(max_length=50, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50, null=True)
