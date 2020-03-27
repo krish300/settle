@@ -170,7 +170,7 @@
                   <tbody>
                     <tr>
                       <td>Opening Cash:</td>
-                      <td>test val</td>
+                      <td>{{ openingCash }}</td>
                     </tr>
                     <tr>
                       <td>Closing Cash:</td>
@@ -247,6 +247,7 @@ export default {
   },
   data() {
     return {
+      saleSummaryId: null,
       layoutInfo: [],
       processedTableLayoutData: {},
       softwareSaleData: {},
@@ -255,6 +256,7 @@ export default {
       managerSale: 0,
       discount: 0,
       closingCash: 0,
+      openingCash: 0,
       cashCalcDialog: false
     };
   },
@@ -281,6 +283,16 @@ export default {
       })
       .catch(error => {
         console.log("error while fetching available payment modes", error);
+      });
+
+    axios
+      .get(`${process.env.VUE_APP_SERVER_URL}/api/settlement/${this.settlementId}/`)
+      .then(response => {
+        this.openingCash = response.data.opening_cash;
+        this.closingCash = response.data.closing_cash;
+      })
+      .catch(error => {
+        console.log("error while fetching settlment data", error);
       });
   },
   computed: {
