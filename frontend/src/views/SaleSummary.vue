@@ -32,7 +32,7 @@
                       <v-simple-table dense>
                         <template v-slot:default>
                           <!-- <th dense>{{ ctgryData.nm }}</th>
-                <v-container class="salesummary-heading" dense>{{ ctgryData.nm }} </v-container> -->
+                          <v-container class="salesummary-heading" dense>{{ ctgryData.nm }} </v-container> -->
                           <tbody>
                             <v-container class="category-container">
                               <!-- each row is a container for each ctegory data -->
@@ -102,7 +102,7 @@
                                         <td class="pay-app-diff-td">
                                           {{
                                             softwareSaleData[payAppData.name] -
-                                              managerSaleData[payAppData.name]
+                                              managerSaleData[payAppData.name] || 0
                                           }}
                                         </td>
                                       </tr>
@@ -113,7 +113,7 @@
                                       <!-- (Only one row) is the diff of total amount in paymaode category -->
                                       <tr class="row-sale-app">
                                         <td class="pay-app-diff-td">
-                                          {{ getCategoryDiff(ctgryData.Sft, ctgryData.Mgr) }}
+                                          {{ getCategoryDiff(ctgryData.Sft, ctgryData.Mgr) || 0 }}
                                         </td>
                                       </tr>
                                     </td>
@@ -148,37 +148,61 @@
             </div>
           </v-col>
           <!-- <v-col :cols="1"></v-col> -->
-          <v-col :cols="4" style="background-color:red">
-            <v-container class="fill-height" fluid name="cash-details">
-              <v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <th class="text-right">
-                      Cash Details
-                    </th>
-                    <!-- cash icon which opens cashCalcDialog -->
-                    <th class="text-right">
-                      <v-dialog v-model="cashCalcDialog" max-width="400px">
-                        <template v-slot:activator="{ on }">
-                          <v-icon v-on="on">money</v-icon>
-                        </template>
+          <v-col :cols="4">
+            <v-container class="fill-height" fluid>
+              <v-row>
+                <v-simple-table name="cash-details">
+                  <template v-slot:default>
+                    <thead>
+                      <th class="text-right">
+                        Cash Details
+                      </th>
+                      <!-- cash icon which opens cashCalcDialog -->
+                      <th class="text-right">
+                        <v-dialog v-model="cashCalcDialog" max-width="400px">
+                          <template v-slot:activator="{ on }">
+                            <v-icon v-on="on">money</v-icon>
+                          </template>
 
-                        <CashCalc @cash-update="onCashUpdate" />
-                      </v-dialog>
-                    </th>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Opening Cash:</td>
-                      <td>{{ openingCash }}</td>
-                    </tr>
-                    <tr>
-                      <td>Closing Cash:</td>
-                      <td>{{ closingCash }}</td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+                          <CashCalc @cash-update="onCashUpdate" />
+                        </v-dialog>
+                      </th>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Opening Cash:</td>
+                        <td>{{ openingCash }}</td>
+                      </tr>
+                      <tr>
+                        <td>Closing Cash:</td>
+                        <td>{{ closingCash }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-row>
+              <v-row>
+                <v-simple-table name="actions" class="actions-table">
+                  <template v-slot:default>
+                    <thead>
+                      <th class="text-center" width="190">Actions</th>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <v-btn block large>SAVE</v-btn>
+                      </tr>
+                      <tr>
+                        <v-btn block large color="primary" :disabled="closeButtonDisabled"
+                          >CLOSE</v-btn
+                        >
+                      </tr>
+                      <tr>
+                        <v-btn block large color="error">DELETE</v-btn>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-row>
             </v-container>
           </v-col>
         </v-row>
@@ -257,7 +281,8 @@ export default {
       discount: 0,
       closingCash: 0,
       openingCash: 0,
-      cashCalcDialog: false
+      cashCalcDialog: false,
+      closeButtonDisabled: false
     };
   },
   created() {
