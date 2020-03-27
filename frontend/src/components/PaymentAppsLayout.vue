@@ -3,10 +3,10 @@
     <v-simple-table>
       <template v-slot:default>
         <tbody>
-          <v-row class="salesummary-heading" no-gutters>
+          <v-row class="salesummary-heading" :elevation="5">
             <v-col :cols="7">
-              <v-card color="teal ligten-1">
-                <v-row no-gutters>
+              <v-sheet color="teal ligten-1" class="white--text font-weight-bold" :elevation="5">
+                <v-row>
                   <v-col :cols="5"> Software </v-col>
                   <v-col :cols="5">
                     Cashier
@@ -15,7 +15,7 @@
                     Differance
                   </v-col>
                 </v-row>
-              </v-card>
+              </v-sheet>
             </v-col>
           </v-row>
 
@@ -117,6 +117,19 @@
               </template>
             </v-simple-table>
           </tr>
+          <v-row class="totals-bar">
+            <v-col :cols="7">
+              <v-sheet color="teal ligten-1" class="white--text font-weight-bold" :elevation="5">
+                <v-row>
+                  <v-col :cols="5"> Total: {{ softwareSale }} </v-col>
+                  <v-col :cols="5"> Total: {{ managerSale }} </v-col>
+                  <v-col :cols="2">
+                    {{ softwareSale - managerSale }}
+                  </v-col>
+                </v-row>
+              </v-sheet>
+            </v-col>
+          </v-row>
         </tbody>
       </template>
     </v-simple-table>
@@ -173,10 +186,11 @@ export default {
     return {
       layoutInfo: [],
       processedTableLayoutData: {},
-      //FIXME(kt): remove hardcode
-      settlemenId: "340d7515-4e3a-4d5e-a11e-0219bed065d0",
       softwareSaleData: {},
-      managerSaleData: {}
+      managerSaleData: {},
+      softwareSale: 0,
+      managerSale: 0,
+      discount: 0
     };
   },
   created() {
@@ -185,10 +199,15 @@ export default {
       .then(response => {
         this.layoutInfo = response.data;
         axios
-          .get(`${process.env.VUE_APP_SERVER_URL}/api/sale-summary/?settlement=${this.settlemenId}`)
+          .get(
+            `${process.env.VUE_APP_SERVER_URL}/api/sale-summary/?settlement=${this.settlementId}`
+          )
           .then(response => {
             this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
             this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
+            this.softwareSale = response.data[0].software_sale;
+            this.managerSale = response.data[0].manager_sale;
+            this.discount = response.data[0].software_discount;
             this.makeTableLayoutData();
           })
           .catch(error => {
@@ -200,7 +219,22 @@ export default {
       });
   },
   computed: {
-    ...mapState(["currentUserInfo"])
+    ...mapState(["currentUserInfo", "settlementId"])
+  },
+  watch: {
+    // whenever softwareSaleData changes(deep watch), this handler will run
+    softwareSaleData: {
+      deep: true,
+      handler(softwareSaleData) {
+        this.softwareSale = Object.values(softwareSaleData).reduce((a, b) => Number(a) + Number(b));
+      }
+    },
+    managerSaleData: {
+      deep: true,
+      handler(managerSaleData) {
+        this.managerSale = Object.values(managerSaleData).reduce((a, b) => Number(a) + Number(b));
+      }
+    }
   }
 };
 </script>
@@ -209,7 +243,6 @@ export default {
 .PaymentAppsLayout .v-text-field input {
   padding-top: 0px;
   padding-bottom: 0px;
-  //background-color: none;
 }
 
 .PaymentAppsLayout .v-input__slot:before {
@@ -221,7 +254,6 @@ export default {
   border-style: solid;
   border-color: black;
   width: 100px;
-  // height: 32px;
 }
 
 .PaymentAppsLayout .pay-app-name-td {
@@ -230,7 +262,7 @@ export default {
   border-color: black;
   width: 125px;
   padding-left: 2px;
-  // height: 32px;
+  background-color: bisque;
 }
 
 .PaymentAppsLayout .pay-app-diff-td {
@@ -238,7 +270,6 @@ export default {
   border-style: solid;
   border-color: black;
   width: 50px;
-  // height: 32px;
 }
 
 .PaymentAppsLayout .row-sale-app {
@@ -249,15 +280,9 @@ export default {
   padding-top: 0px !important;
   padding-left: 0px !important;
   padding-bottom: 2px !important;
-  border-bottom: 0.3px;
-  border-bottom-style: solid;
 }
 
-.salesummary-heading .col {
-  padding-bottom: 0;
-}
-
-.salesummary-heading {
-  padding-bottom: 3px;
+.v-data-table__wrapper {
+  overflow-x: hidden !important;
 }
 </style>
