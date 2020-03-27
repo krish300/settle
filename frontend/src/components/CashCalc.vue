@@ -5,7 +5,7 @@
     </v-card-title>
     <v-card-text>
       <v-container name="cash-calc">
-        <v-simple-table fixed-header height="300px" dense>
+        <v-simple-table height="300px" dense>
           <template v-slot:default>
             <thead>
               <tr>
@@ -17,13 +17,14 @@
             <tbody>
               <tr v-for="(item, index) in denominations" :key="index">
                 <td>{{ item[0] }} X</td>
-                <td>
+                <td width="15">
                   <v-text-field
                     type="number"
                     hide-details
                     dense
                     single-line
                     v-model="item[1]"
+                    height="10"
                   ></v-text-field>
                 </td>
                 <td>{{ item[0] * item[1] }}</td>
