@@ -270,11 +270,13 @@ export default {
             `${process.env.VUE_APP_SERVER_URL}/api/sale-summary/?settlement=${this.settlementId}`
           )
           .then(response => {
-            this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
-            this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
-            this.softwareSale = response.data[0].software_sale;
-            this.managerSale = response.data[0].manager_sale;
-            this.discount = response.data[0].software_discount;
+            if (response.data.length > 0) {
+              this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
+              this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
+              this.softwareSale = response.data[0].software_sale;
+              this.managerSale = response.data[0].manager_sale;
+              this.discount = response.data[0].software_discount;
+            }
             this.makeTableLayoutData();
           })
           .catch(error => {
