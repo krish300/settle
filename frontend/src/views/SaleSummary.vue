@@ -154,8 +154,15 @@
                     <th class="text-right">
                       Cash Details
                     </th>
+                    <!-- cash icon which opens cashCalcDialog -->
                     <th class="text-right">
-                      <v-icon>money</v-icon>
+                      <v-dialog v-model="cashCalcDialog" max-width="400px">
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on">money</v-icon>
+                        </template>
+
+                        <CashCalc @cash-update="onCashUpdate" />
+                      </v-dialog>
                     </th>
                   </thead>
                   <tbody>
@@ -165,7 +172,7 @@
                     </tr>
                     <tr>
                       <td>Closing Cash:</td>
-                      <td>test val</td>
+                      <td>{{ closingCash }}</td>
                     </tr>
                   </tbody>
                 </template>
@@ -228,6 +235,12 @@ export default {
       });
       this.processedTableLayoutData = returnObj;
       return returnObj;
+    },
+    onCashUpdate(d) {
+      this.cashCalcDialog = false;
+      if (d != null) {
+        this.closingCash = d;
+      }
     }
   },
   data() {
@@ -238,7 +251,9 @@ export default {
       managerSaleData: {},
       softwareSale: 0,
       managerSale: 0,
-      discount: 0
+      discount: 0,
+      closingCash: 0,
+      cashCalcDialog: false
     };
   },
   created() {
