@@ -158,7 +158,7 @@
                             <v-col :cols="5"> Total: {{ softwareSale }} </v-col>
                             <v-col :cols="5"> Total: {{ managerSale }} </v-col>
                             <v-col :cols="1">
-                              {{ softwareSale - managerSale }}
+                              {{ saleDiff }}
                             </v-col>
                           </v-row>
                         </v-sheet>
@@ -214,7 +214,12 @@
                         <v-btn block large @click="saveSettlementAndSale">SAVE</v-btn>
                       </tr>
                       <tr>
-                        <v-btn block large color="primary" :disabled="closeButtonDisabled"
+                        <v-btn
+                          block
+                          large
+                          color="primary"
+                          :disabled="closeButtonDisabled"
+                          @click="closeSettlement"
                           >CLOSE</v-btn
                         >
                       </tr>
@@ -311,7 +316,9 @@ export default {
           console.log("error while saving settlement data", error);
         });
     },
-    closeSettlement() {},
+    closeSettlement() {
+      this.saveSettlementAndSale(true);
+    },
     deleteSettlement() {
       this.deleteAlert = false;
       axios({
@@ -394,7 +401,6 @@ export default {
       closingCash: 0,
       openingCash: 0,
       cashCalcDialog: false,
-      closeButtonDisabled: false,
       errorMessage: "",
       errAlert: false,
       successMessage: "",
@@ -442,7 +448,7 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      // executed after render + 2sec
+      // executed after render + 2sec to make manager cash readonly
       //this.$refs["Mgr-Cash-Value"][0].readonly = true;
     }, 2000);
   },
@@ -455,7 +461,22 @@ export default {
       "settlementDate",
       "settlementName"
     ]),
-    ...mapGetters(["currentUserName"])
+    ...mapGetters(["currentUserName"]),
+    saleDiff() {
+      return this.softwareSale - this.managerSale;
+    },
+    closeButtonDisabled() {
+      // verify if cash sale/expense/opening cash is matching
+      if (
+        this.closingCash + this.totalCashExpense - this.openingCash ===
+        this.managerSaleData.Cash
+      ) {
+        if (this.saleDiff == 0) {
+          return false;
+        }
+      }
+      return true;
+    }
   },
   watch: {
     // whenever softwareSaleData changes(deep watch), this handler will run
