@@ -108,7 +108,8 @@ class SaleSummary(models.Model):
     class Meta:
         ordering = ['-date']
         get_latest_by = '-date'
-    settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
+    settlement = models.ForeignKey(
+        "Settlement", on_delete=models.CASCADE, unique=True)
     date = models.DateField(unique=True)
     software_data = JSONField(null=True)
     manager_data = JSONField(null=True)
