@@ -5,15 +5,21 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    //FIXME(kt): remove hardcode
-    settlementDate: "15-03-2020",
-    //FIXME(kt): remove hardcode
-    settlementId: "340d7515-4e3a-4d5e-a11e-0219bed065d0",
+    settlementDate: "00-00-0000",
+    settlementId: "",
+    settlementName: "NA",
     totalCashExpense: 0,
     totalExpense: 0,
     currentUserInfo: {}
   },
   mutations: {
+    setInitState(state, settlementInfo) {
+      state.settlementDate = settlementInfo.date;
+      state.settlementId = settlementInfo.id;
+      state.settlementName = settlementInfo.name;
+      state.totalCashExpense = settlementInfo.cash_expense;
+      state.totalExpense = settlementInfo.expense;
+    },
     setCurrentUserInfo(state, d) {
       state.currentUserInfo = d;
     },

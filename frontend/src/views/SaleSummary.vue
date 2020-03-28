@@ -287,6 +287,7 @@ export default {
         urlAppend = this.saleSummaryId + "/";
         saleSummaryMethod = "PUT";
       }
+      // save settlement data
       axios({
         method: "PUT",
         url: `${process.env.VUE_APP_SERVER_URL}/api/settlement/${this.settlementId}/`,
@@ -294,6 +295,7 @@ export default {
         xsrfHeaderName: "X-CSRFToken"
       })
         .then(response => {
+          // save sale summary data
           axios({
             method: saleSummaryMethod,
             url: `${process.env.VUE_APP_SERVER_URL}/api/sale-summary/${urlAppend}`,
@@ -303,6 +305,9 @@ export default {
             .then(response => {
               this.successMessage = successMsg;
               this.sucessAlert = true;
+              if (this.saleSummaryId === null) {
+                this.saleSummaryId = response.data.id;
+              }
             })
             .catch(error => {
               this.errorMessage = "error while saving, call admin.";
