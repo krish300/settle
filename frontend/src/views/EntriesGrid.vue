@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-alert type="error" v-show="addEntryError" dismissible>
+    <v-alert type="error" v-model="addEntryError" dismissible>
       {{ alertErrorMessage }}
     </v-alert>
     <v-form ref="addEntryForm" v-model="valid" lazy-validation>

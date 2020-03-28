@@ -2,6 +2,24 @@
   <v-app>
     <template>
       <v-container grid-list-md>
+        <v-alert type="error" v-model="errAlert" dismissible>
+          {{ errorMessage }}
+        </v-alert>
+        <v-alert type="success" v-model="sucessAlert" dismissible>
+          {{ successMessage }}
+        </v-alert>
+        <v-alert prominent type="error" v-model="deleteAlert">
+          <v-row align="center">
+            <v-col class="grow"
+              >This will delete Settlement, SaleSummary and Expense Entries for the selected day.
+              <br />
+              <b>Are you sure?</b>
+            </v-col>
+            <v-col class="shrink">
+              <v-btn @click="deleteSettlement">Confirm Delete</v-btn>
+            </v-col>
+          </v-row>
+        </v-alert>
         <v-row>
           <v-col :cols="7">
             <div class="PaymentAppsLayout">
@@ -193,7 +211,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <v-btn block large>SAVE</v-btn>
+                        <v-btn block large @click="saveSettlementAndSale">SAVE</v-btn>
                       </tr>
                       <tr>
                         <v-btn block large color="primary" :disabled="closeButtonDisabled"
@@ -201,7 +219,7 @@
                         >
                       </tr>
                       <tr>
-                        <v-btn block large color="error">DELETE</v-btn>
+                        <v-btn block large color="error" @click="deleteAlert = true">DELETE</v-btn>
                       </tr>
                     </tbody>
                   </template>
@@ -217,8 +235,8 @@
 
 <script>
 import CashCalc from "@/components/CashCalc.vue";
-
-import { mapState, Store } from "vuex";
+import router from "../router";
+import { mapState, mapGetters } from "vuex";
 import axios from "axios";
 export default {
   name: "SaleSummary",
@@ -226,6 +244,92 @@ export default {
     CashCalc
   },
   methods: {
+    validateData() {},
+    saveSettlementAndSale(close = false) {
+      // settlement
+      let settlementPostData = {
+        opening_cash: this.openingCash,
+        closing_cash: this.closingCash,
+        cash_expense: this.totalCashExpense,
+        expense: this.totalExpense,
+        last_modified_by: this.currentUserName,
+        date: this.settlementDate,
+        name: this.settlementName,
+        id: this.settlementId
+      };
+
+      let successMsg = "Saved Successfully!";
+      if (close == true) {
+        settlementPostData.is_closed = true;
+        settlementPostData.closed_by = this.currentUserName;
+        successMsg = "Closed Successfully!";
+      }
+
+      // sale summary
+      let salePostData = {
+        date: this.settlementDate,
+        software_data: JSON.stringify(this.softwareSaleData),
+        manager_data: JSON.stringify(this.managerSaleData),
+        software_sale: this.softwareSale,
+        manager_sale: this.managerSale,
+        software_discount: this.discount,
+        last_modified_by: this.currentUserName,
+        settlement: this.settlementId
+      };
+      let saleSummaryMethod = "POST";
+      let urlAppend = "";
+      if (this.saleSummaryId !== null) {
+        urlAppend = this.saleSummaryId + "/";
+        saleSummaryMethod = "PUT";
+      }
+      axios({
+        method: "PUT",
+        url: `${process.env.VUE_APP_SERVER_URL}/api/settlement/${this.settlementId}/`,
+        data: settlementPostData,
+        xsrfHeaderName: "X-CSRFToken"
+      })
+        .then(response => {
+          axios({
+            method: saleSummaryMethod,
+            url: `${process.env.VUE_APP_SERVER_URL}/api/sale-summary/${urlAppend}`,
+            data: salePostData,
+            xsrfHeaderName: "X-CSRFToken"
+          })
+            .then(response => {
+              this.successMessage = successMsg;
+              this.sucessAlert = true;
+            })
+            .catch(error => {
+              this.errorMessage = "error while saving, call admin.";
+              this.errAlert = true;
+              console.log("error while saving sale summary data", error);
+            });
+        })
+        .catch(error => {
+          this.errorMessage = "error while saving, call admin.";
+          this.errAlert = true;
+          console.log("error while saving settlement data", error);
+        });
+    },
+    closeSettlement() {},
+    deleteSettlement() {
+      this.deleteAlert = false;
+      axios({
+        method: "DELETE",
+        url: `${process.env.VUE_APP_SERVER_URL}/api/settlement/${this.settlementId}/`,
+        xsrfHeaderName: "X-CSRFToken"
+      })
+        .then(response => {
+          this.successMessage = "Settlement Deleted!";
+          this.sucessAlert = true;
+          router.push({ path: "home" });
+        })
+        .catch(error => {
+          this.errorMessage = "error while deleting the Settlement please call admin.";
+          this.errAlert = true;
+          console.log("error while deleting the Settlement", error);
+        });
+    },
     getPayAppDiff(sftPayAppVal, mgrPayAppVal) {
       return Number(sftPayAppVal || 0) - Number(mgrPayAppVal || 0);
     },
@@ -290,7 +394,12 @@ export default {
       closingCash: 0,
       openingCash: 0,
       cashCalcDialog: false,
-      closeButtonDisabled: false
+      closeButtonDisabled: false,
+      errorMessage: "",
+      errAlert: false,
+      successMessage: "",
+      sucessAlert: false,
+      deleteAlert: false
     };
   },
   created() {
@@ -309,6 +418,7 @@ export default {
               this.softwareSale = response.data[0].software_sale;
               this.managerSale = response.data[0].manager_sale;
               this.discount = response.data[0].software_discount;
+              this.saleSummaryId = response.data[0].id;
             }
             this.makeTableLayoutData();
           })
@@ -337,7 +447,15 @@ export default {
     }, 2000);
   },
   computed: {
-    ...mapState(["currentUserInfo", "settlementId", "totalCashExpense"])
+    ...mapState([
+      "currentUserInfo",
+      "settlementId",
+      "totalCashExpense",
+      "totalExpense",
+      "settlementDate",
+      "settlementName"
+    ]),
+    ...mapGetters(["currentUserName"])
   },
   watch: {
     // whenever softwareSaleData changes(deep watch), this handler will run
