@@ -35,7 +35,7 @@ def on_settlement_delete(sender, instance, **info):
 
 
 def create_new_settlement():
-    last_settlement = Settlement.objects.all().last()
+    last_settlement = Settlement.objects.all().earliest()
     if last_settlement == None:
         opening_cash = 0
         date = datetime.now().strftime('%Y-%m-%d')
