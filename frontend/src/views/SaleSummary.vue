@@ -58,7 +58,7 @@
                                               dense
                                               single-line
                                               :ref="'Sft-' + payApp.name + '-Value'"
-                                              v-model="softwareSaleData[payApp.name]"
+                                              v-model.number="softwareSaleData[payApp.name]"
                                             ></v-text-field>
                                           </td>
                                         </tr>
@@ -83,7 +83,7 @@
                                               dense
                                               single-line
                                               :ref="'Mgr-' + payApp.name + '-Value'"
-                                              v-model="managerSaleData[payApp.name]"
+                                              v-model.number="managerSaleData[payApp.name]"
                                             ></v-text-field>
                                           </td>
                                         </tr>
@@ -103,8 +103,10 @@
                                       >
                                         <td class="pay-app-diff-td">
                                           {{
-                                            softwareSaleData[payAppData.name] -
-                                              managerSaleData[payAppData.name] || 0
+                                            getPayAppDiff(
+                                              softwareSaleData[payAppData.name],
+                                              managerSaleData[payAppData.name]
+                                            )
                                           }}
                                         </td>
                                       </tr>
@@ -115,7 +117,7 @@
                                       <!-- (Only one row) is the diff of total amount in paymaode category -->
                                       <tr class="row-sale-app">
                                         <td class="pay-app-diff-td">
-                                          {{ getCategoryDiff(ctgryData.Sft, ctgryData.Mgr) || 0 }}
+                                          {{ getCategoryDiff(ctgryData.Sft, ctgryData.Mgr) }}
                                         </td>
                                       </tr>
                                     </td>
@@ -224,17 +226,20 @@ export default {
     CashCalc
   },
   methods: {
+    getPayAppDiff(sftPayAppVal, mgrPayAppVal) {
+      return Number(sftPayAppVal || 0) - Number(mgrPayAppVal || 0);
+    },
     getCategoryDiff(sftPayCtgryData, mgrPayCtgryData) {
       let sftCtgryTotal = 0;
       let mgrCtgryTotal = 0;
       let diff = 0;
       for (let i = 0; i < sftPayCtgryData.length; i++) {
-        sftCtgryTotal += this.softwareSaleData[sftPayCtgryData[i].name];
+        sftCtgryTotal += Number(this.softwareSaleData[sftPayCtgryData[i].name] || 0);
       }
       for (let i = 0; i < mgrPayCtgryData.length; i++) {
-        mgrCtgryTotal += this.managerSaleData[mgrPayCtgryData[i].name];
+        mgrCtgryTotal += Number(this.managerSaleData[mgrPayCtgryData[i].name] || 0);
       }
-      diff = sftCtgryTotal - mgrCtgryTotal;
+      diff = Number(sftCtgryTotal) - Number(mgrCtgryTotal);
       return diff;
     },
     makeTableLayoutData() {
@@ -249,19 +254,20 @@ export default {
         if (payMode.display_in === "MANAGER" || payMode.display_in === "BOTH") {
           returnObj[ctgry].Mgr.push({
             name: payMode.name,
-            display_name: payMode.display_name,
-            value: this.managerSaleData[payMode.name] || 0
+            display_name: payMode.display_name
           });
+          //this.managerSaleData[payMode.name] = this.managerSaleData[payMode.name] || 0;
         }
         if (payMode.display_in === "SOFTWARE" || payMode.display_in === "BOTH") {
           returnObj[ctgry].Sft.push({
             name: payMode.name,
-            display_name: payMode.display_name,
-            value: this.softwareSaleData[payMode.name] || 0
+            display_name: payMode.display_name
           });
+          //this.softwareSaleData[payMode.name] = this.softwareSaleData[payMode.name] || 0;
         }
       });
       this.processedTableLayoutData = returnObj;
+
       return returnObj;
     },
     onCashUpdate(d) {
@@ -327,7 +333,7 @@ export default {
   mounted() {
     setTimeout(() => {
       // executed after render + 2sec
-      this.$refs["Mgr-Cash-Value"][0].readonly = true;
+      //this.$refs["Mgr-Cash-Value"][0].readonly = true;
     }, 2000);
   },
   computed: {
