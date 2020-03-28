@@ -1,6 +1,9 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .serializers import SettlementSerializer
 
 from . import models
 from . import serializers
@@ -40,6 +43,12 @@ class SettlementViewSet(Base, ModelViewSet):
     queryset = models.Settlement.objects.all()
     serializer_class = serializers.SettlementSerializer
     filter_fields = ('date', 'name')
+
+    @action(detail=False, methods=['get'], url_path='latest')
+    def get_latest(self, request, *args, **kwargs):
+        headers = {}
+        settlement = SettlementSerializer(models.Settlement.objects.earliest())
+        return Response(settlement.data, headers=headers, status=200)
 
 
 class SaleSummaryViewSet(Base, ModelViewSet):
