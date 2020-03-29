@@ -94,7 +94,7 @@ class Settlement(models.Model):
     cash_expense = models.PositiveIntegerField(default=0)
     expense = models.PositiveIntegerField(default=0)
     is_closed = models.BooleanField(default=False)
-    closed_by = models.CharField(max_length=50, null=True)
+    closed_by = models.CharField(max_length=50, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=50, null=True)
@@ -108,7 +108,8 @@ class SaleSummary(models.Model):
     class Meta:
         ordering = ['-date']
         get_latest_by = '-date'
-    settlement = models.ForeignKey("Settlement", on_delete=models.CASCADE)
+    settlement = models.ForeignKey(
+        "Settlement", on_delete=models.CASCADE, unique=True)
     date = models.DateField(unique=True)
     software_data = JSONField(null=True)
     manager_data = JSONField(null=True)

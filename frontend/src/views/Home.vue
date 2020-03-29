@@ -20,7 +20,7 @@
     <v-app-bar clipped-left app color="primary" dark extension-height="100%">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title class="font-italic font-weight-bold">
-        Settlement For Date: 14-Mar-2020
+        {{ settlementName }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
@@ -28,7 +28,7 @@
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn color="primary" v-on="on">
-            {{ userInfo.username }}
+            {{ currentUserName }}
           </v-btn>
         </template>
         <v-list>
@@ -78,6 +78,7 @@
 <script>
 import EntriesGrid from "./EntriesGrid";
 import SaleSummary from "./SaleSummary";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "Home",
@@ -111,9 +112,8 @@ export default {
   }),
 
   computed: {
-    userInfo() {
-      return this.$store.state.currentUserInfo;
-    }
+    ...mapState(["currentUserInfo", "settlementName"]),
+    ...mapGetters(["currentUserName"])
   }
 };
 </script>
