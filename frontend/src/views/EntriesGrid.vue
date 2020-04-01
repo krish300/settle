@@ -31,7 +31,7 @@
             :menu-props="menuProps"
           ></v-autocomplete>
         </v-col>
-        <v-col cols="1">
+        <v-col cols="1" v-if="isAdmin">
           <v-autocomplete
             v-model="modeSelected"
             :items="mode"
@@ -257,7 +257,7 @@ export default {
       "currentUserName",
       "settlementDate"
     ]),
-    ...mapGetters(["currentUserName"])
+    ...mapGetters(["currentUserName", "isAdmin"])
   }
 };
 </script>

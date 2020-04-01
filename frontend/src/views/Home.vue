@@ -37,9 +37,14 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <!-- <v-btn icon @click="extendedCalander=!extendedCalander"> -->
-      <!-- <span inline-block justify="end" align="center"> -->
-      <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="25%">
+      <v-dialog
+        ref="dialog"
+        v-model="modal"
+        v-if="isAdmin"
+        :return-value.sync="date"
+        persistent
+        width="25%"
+      >
         <template v-slot:activator="{ on }">
           <v-text-field
             v-model="date"
@@ -57,10 +62,6 @@
           <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
         </v-date-picker>
       </v-dialog>
-      <!-- </span> -->
-      <!-- <template v-slot:extension v-if="extendedCalander">
-          <v-date-picker full-width class="mb-4" />
-      </template> -->
     </v-app-bar>
     <!-- Sizes your content based upon application components -->
     <v-content style="padding-top:0px;">
@@ -113,7 +114,7 @@ export default {
 
   computed: {
     ...mapState(["currentUserInfo", "settlementName"]),
-    ...mapGetters(["currentUserName"])
+    ...mapGetters(["currentUserName", "isAdmin"])
   }
 };
 </script>
