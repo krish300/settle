@@ -28,6 +28,9 @@ export default new Vuex.Store({
     },
     setTotalCashExpense(state, exp) {
       state.totalCashExpense = exp;
+    },
+    setSettlementDate(state, dt) {
+      state.settlementDate = dt;
     }
   },
   getters: {
