@@ -36,6 +36,12 @@ export default new Vuex.Store({
         return "NA";
       }
       return state.currentUserInfo.username;
+    },
+    isAdmin(state) {
+      if (state.currentUserInfo.is_staff == true) {
+        return true;
+      }
+      return false;
     }
   },
   actions: {},

@@ -29,7 +29,7 @@ class Entity(models.Model):
     type = models.ForeignKey(
         'EntityType', on_delete=models.PROTECT)
     category = models.ForeignKey(
-        'ExpenseCategory', on_delete=models.SET_NULL, null=True)
+        'ExpenseCategory', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
