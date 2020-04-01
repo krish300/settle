@@ -243,6 +243,7 @@ export default {
       .get(`${process.env.VUE_APP_SERVER_URL}/api/entry/?settlement=${this.settlementId}`)
       .then(response => {
         this.cashOutRecords = response.data;
+        this.updateTotalExpenses();
       })
       .catch(error => {
         console.log("error while fetching existing entries", error);
