@@ -12,7 +12,7 @@
             return-object
             :rules="[v => !!v || 'Category is required']"
             label="Select Option"
-            v-on:change="catgeorySelection"
+            v-on:change="expCatgeorySelection"
             item-text="name"
             item-value="id"
             cache-items
@@ -96,11 +96,15 @@ export default {
   name: "EntriesGrid",
   components: {},
   methods: {
-    catgeorySelection(data) {
+    expCatgeorySelection(data) {
+      console.log(data);
       this.cashOutRecord = {};
       this.cashOutRecord.category = data.id;
+      data.expense_category = data.expense_category || "";
       axios
-        .get(`${process.env.VUE_APP_SERVER_URL}/api/entity/?type=${data.entity_type}`)
+        .get(
+          `${process.env.VUE_APP_SERVER_URL}/api/entity/?type=${data.entity_type}&category=${data.expense_category}`
+        )
         .then(response => {
           if (response.data.length > 0) {
             this.entityOptions = response.data;
