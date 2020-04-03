@@ -250,7 +250,7 @@ export default {
   },
   methods: {
     validateData() {},
-    saveSettlementAndSale(close = false) {
+    saveSettlementAndSale(action = "") {
       // settlement
       let settlementPostData = {
         opening_cash: this.openingCash,
@@ -262,9 +262,9 @@ export default {
         name: this.settlementName,
         id: this.settlementId
       };
-
+      var settlementChangesSaved = false;
       let successMsg = "Saved Successfully!";
-      if (close == true) {
+      if (action == "close") {
         settlementPostData.is_closed = true;
         settlementPostData.closed_by = this.currentUserName;
         successMsg = "Closed Successfully!";
@@ -308,6 +308,9 @@ export default {
               if (this.saleSummaryId === null) {
                 this.saleSummaryId = response.data.id;
               }
+              if (action == "close") {
+                this.settlementClosed = true;
+              }
             })
             .catch(error => {
               this.errorMessage = "error while saving, call admin.";
@@ -322,7 +325,7 @@ export default {
         });
     },
     closeSettlement() {
-      this.saveSettlementAndSale(true);
+      this.saveSettlementAndSale("close");
     },
     deleteSettlement() {
       this.deleteAlert = false;
@@ -410,7 +413,8 @@ export default {
       errAlert: false,
       successMessage: "",
       sucessAlert: false,
-      deleteAlert: false
+      deleteAlert: false,
+      settlementClosed: false
     };
   },
   created() {
@@ -495,6 +499,21 @@ export default {
       deep: true,
       handler(managerSaleData) {
         this.managerSale = Object.values(managerSaleData).reduce((a, b) => Number(a) + Number(b));
+      }
+    },
+    settlementClosed: {
+      handler() {
+        if (this.settlementClosed) {
+          axios
+            .get(`${process.env.VUE_APP_SERVER_URL}/api/settlement/latest/`)
+            .then(response => {
+              this.$store.commit("setInitState", response.data);
+              this.settlementClosed = false;
+            })
+            .catch(error => {
+              console.log("error while fetching new settlement info", error);
+            });
+        }
       }
     }
   }
