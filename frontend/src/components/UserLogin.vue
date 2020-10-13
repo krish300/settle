@@ -97,6 +97,9 @@ export default {
     };
   },
   created() {
+    if (this.currentUserInfo.username) {
+      router.push({ path: "home" });
+    }
     axios
       .get(`${process.env.VUE_APP_SERVER_URL}/api/auth/users/`)
       .then(response => {

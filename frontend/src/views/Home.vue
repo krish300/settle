@@ -33,7 +33,12 @@
         </template>
         <v-list>
           <v-list-item>
-            <v-list-item-title>Logout</v-list-item-title>
+            <v-btn class="ma-2" color="red" dark @click.native="logout">
+              Logout
+              <v-icon dark right>
+                mdi-cancel
+              </v-icon>
+            </v-btn>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -77,6 +82,7 @@
 </template>
 
 <script>
+import router from "../router";
 import EntriesGrid from "./EntriesGrid";
 import SaleSummary from "./SaleSummary";
 import { mapState, mapGetters } from "vuex";
@@ -89,7 +95,12 @@ export default {
     EntriesGrid,
     SaleSummary
   },
-
+  methods: {
+    logout() {
+      this.$store.commit("resetState");
+      router.push({ path: "/" });
+    }
+  },
   data: () => ({
     drawer: false,
     clipped: true,
@@ -128,6 +139,11 @@ export default {
         let dy = new_dt.slice(8, 10);
         this.$store.commit("setSettlementDate", `${dy}-${mo}-${yr}`);
       }
+    }
+  },
+  created() {
+    if (this.currentUserName == "NA") {
+      router.push({ path: "/" });
     }
   },
   watch: {

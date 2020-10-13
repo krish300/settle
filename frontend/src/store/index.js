@@ -37,6 +37,14 @@ export default new Vuex.Store({
     },
     setSettlementDate(state, dt) {
       state.settlementDate = dt;
+    },
+    resetState(state) {
+      state.settlementDate = "00-00-0000";
+      state.settlementId = "";
+      state.settlementName = "NA";
+      state.totalCashExpense = 0;
+      state.totalExpense = 0;
+      state.currentUserInfo = {};
     }
   },
   getters: {
