@@ -20,7 +20,7 @@ class EntityTypeSerializer(serializers.ModelSerializer):
 class EntryCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.EntryCategory
-        fields = ('id', 'name', 'entity_type')
+        fields = ('id', 'name', 'entity_type', 'expense_category')
 
 
 class EntrySerializer(serializers.ModelSerializer):

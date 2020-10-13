@@ -12,7 +12,7 @@
             return-object
             :rules="[v => !!v || 'Category is required']"
             label="Select Option"
-            v-on:change="catgeorySelection"
+            v-on:change="expCatgeorySelection"
             item-text="name"
             item-value="id"
             cache-items
@@ -31,7 +31,7 @@
             :menu-props="menuProps"
           ></v-autocomplete>
         </v-col>
-        <v-col cols="1">
+        <v-col cols="1" v-if="isAdmin">
           <v-autocomplete
             v-model="modeSelected"
             :items="mode"
@@ -96,11 +96,15 @@ export default {
   name: "EntriesGrid",
   components: {},
   methods: {
-    catgeorySelection(data) {
+    expCatgeorySelection(data) {
+      console.log(data);
       this.cashOutRecord = {};
       this.cashOutRecord.category = data.id;
+      data.expense_category = data.expense_category || "";
       axios
-        .get(`${process.env.VUE_APP_SERVER_URL}/api/entity/?type=${data.entity_type}`)
+        .get(
+          `${process.env.VUE_APP_SERVER_URL}/api/entity/?type=${data.entity_type}&category=${data.expense_category}`
+        )
         .then(response => {
           if (response.data.length > 0) {
             this.entityOptions = response.data;
@@ -243,6 +247,7 @@ export default {
       .get(`${process.env.VUE_APP_SERVER_URL}/api/entry/?settlement=${this.settlementId}`)
       .then(response => {
         this.cashOutRecords = response.data;
+        this.updateTotalExpenses();
       })
       .catch(error => {
         console.log("error while fetching existing entries", error);
@@ -256,7 +261,7 @@ export default {
       "currentUserName",
       "settlementDate"
     ]),
-    ...mapGetters(["currentUserName"])
+    ...mapGetters(["currentUserName", "isAdmin"])
   }
 };
 </script>

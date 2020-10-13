@@ -28,6 +28,9 @@ export default new Vuex.Store({
     },
     setTotalCashExpense(state, exp) {
       state.totalCashExpense = exp;
+    },
+    setSettlementDate(state, dt) {
+      state.settlementDate = dt;
     }
   },
   getters: {
@@ -36,6 +39,12 @@ export default new Vuex.Store({
         return "NA";
       }
       return state.currentUserInfo.username;
+    },
+    isAdmin(state) {
+      if (state.currentUserInfo.is_staff == true) {
+        return true;
+      }
+      return false;
     }
   },
   actions: {},

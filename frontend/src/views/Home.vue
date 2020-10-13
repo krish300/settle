@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <nav>
-      <v-navigation-drawer v-model="drawer" app clipped="clipped">
+      <v-navigation-drawer v-model="drawer" app clipped temporary absolute>
         <v-list dense>
           <!-- <v-list-item v-for="link in links" :key="link.text" router  :to="link.route"> -->
           <v-list-item
@@ -37,9 +37,14 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <!-- <v-btn icon @click="extendedCalander=!extendedCalander"> -->
-      <!-- <span inline-block justify="end" align="center"> -->
-      <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="25%">
+      <v-dialog
+        ref="dialog"
+        v-model="modal"
+        v-if="isAdmin"
+        :return-value.sync="date"
+        persistent
+        width="25%"
+      >
         <template v-slot:activator="{ on }">
           <v-text-field
             v-model="date"
@@ -57,17 +62,13 @@
           <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
         </v-date-picker>
       </v-dialog>
-      <!-- </span> -->
-      <!-- <template v-slot:extension v-if="extendedCalander">
-          <v-date-picker full-width class="mb-4" />
-      </template> -->
     </v-app-bar>
     <!-- Sizes your content based upon application components -->
     <v-content style="padding-top:0px;">
       <!-- Provides the application the proper gutter -->
       <v-container fluid dense>
         <!-- <EntriesGrid /> -->
-        <component :is="viewName" />
+        <component :is="viewName" :key="viewName + componentKey" />
         <!-- If using vue-router -->
         <!-- <router-view /> -->
       </v-container>
@@ -79,6 +80,7 @@
 import EntriesGrid from "./EntriesGrid";
 import SaleSummary from "./SaleSummary";
 import { mapState, mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
   name: "Home",
@@ -92,9 +94,7 @@ export default {
     drawer: false,
     clipped: true,
     viewName: "EntriesGrid",
-    date: new Date().toISOString().substr(0, 10),
     modal: false,
-    //extendedCalander: false,
     links: [
       {
         icon: "home",
@@ -108,12 +108,40 @@ export default {
         route: "/salesummary",
         compName: "SaleSummary"
       }
-    ]
+    ],
+    componentKey: 0
   }),
-
   computed: {
     ...mapState(["currentUserInfo", "settlementName"]),
-    ...mapGetters(["currentUserName"])
+    ...mapGetters(["currentUserName", "isAdmin"]),
+    date: {
+      get() {
+        let s_date = this.$store.state.settlementDate;
+        let yr = s_date.slice(6, 10);
+        let mo = s_date.slice(3, 5);
+        let dy = s_date.slice(0, 2);
+        return `${yr}-${mo}-${dy}`;
+      },
+      set(new_dt) {
+        let yr = new_dt.slice(0, 4);
+        let mo = new_dt.slice(5, 7);
+        let dy = new_dt.slice(8, 10);
+        this.$store.commit("setSettlementDate", `${dy}-${mo}-${yr}`);
+      }
+    }
+  },
+  watch: {
+    date: function() {
+      axios
+        .get(`${process.env.VUE_APP_SERVER_URL}/api/settlement/?date=${this.date}`)
+        .then(response => {
+          this.$store.commit("setInitState", response.data[0]);
+          this.componentKey += 1;
+        })
+        .catch(error => {
+          console.log("error while fetching new settlement info", error);
+        });
+    }
   }
 };
 </script>

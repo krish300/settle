@@ -25,11 +25,15 @@ class ExpenseCategory(models.Model):
 
 
 class Entity(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        unique_together = ['name', 'category']
+
+    name = models.CharField(max_length=50)
     type = models.ForeignKey(
         'EntityType', on_delete=models.PROTECT)
     category = models.ForeignKey(
-        'ExpenseCategory', on_delete=models.SET_NULL, null=True)
+        'ExpenseCategory', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -41,6 +45,8 @@ class Entity(models.Model):
 class EntryCategory(models.Model):
     name = models.CharField(max_length=50, unique=True)
     entity_type = models.ForeignKey('EntityType',  on_delete=models.PROTECT)
+    expense_category = models.ForeignKey(
+        'ExpenseCategory',  on_delete=models.PROTECT, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -108,8 +114,7 @@ class SaleSummary(models.Model):
     class Meta:
         ordering = ['-date']
         get_latest_by = '-date'
-    settlement = models.ForeignKey(
-        "Settlement", on_delete=models.CASCADE, unique=True)
+    settlement = models.OneToOneField("Settlement", on_delete=models.CASCADE)
     date = models.DateField(unique=True)
     software_data = JSONField(null=True)
     manager_data = JSONField(null=True)
