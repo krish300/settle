@@ -7,12 +7,12 @@
       <v-row class="text-center" dense>
         <v-col cols="2">
           <v-autocomplete
-            v-model="selectedCategory"
+            v-model="selectedEntryCategory"
             :items="entryCategoryOptions"
             return-object
             :rules="[v => !!v || 'Category is required']"
             label="Select Option"
-            v-on:change="expCatgeorySelection"
+            v-on:change="entryCatgeorySelection"
             item-text="name"
             item-value="id"
             cache-items
@@ -41,7 +41,7 @@
             cache-items
           ></v-autocomplete>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="1">
           <v-text-field
             type="number"
             v-model="enteredAmount"
@@ -51,7 +51,18 @@
             clearable
           ></v-text-field>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="1">
+          <v-text-field
+            type="number"
+            v-model="enteredQuantity"
+            :rules="[(v => !!v || quantityDisabled) || 'Quantity  is required']"
+            label="Quantity"
+            clearable
+            :disabled="quantityDisabled"
+            :suffix="quantityUnit"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="2">
           <v-text-field
             v-model="enteredComment"
             :rules="[v => !!v || 'Comment  is required']"
@@ -73,6 +84,7 @@
           <td>{{ row.item.expense_category }}</td>
           <td>{{ row.item.entity_name }}</td>
           <td>{{ row.item.amount }}</td>
+          <td>{{ row.item.quantity }} {{ row.item.quantity_unit }}</td>
           <td>{{ row.item.comment }}</td>
           <td>
             <v-icon small color="red" dense @click="deleteItem(row.item)"> delete </v-icon>
@@ -96,8 +108,15 @@ export default {
   name: "EntriesGrid",
   components: {},
   methods: {
-    expCatgeorySelection(data) {
-      console.log(data);
+    entryCatgeorySelection(data) {
+      if (this.entitySelected) {
+        this.entitySelected = -1;
+      }
+      if (data.name === "LOCAL PURCHASE") {
+        this.quantityDisabled = false;
+      } else {
+        this.quantityDisabled = true;
+      }
       this.cashOutRecord = {};
       this.cashOutRecord.category = data.id;
       data.expense_category = data.expense_category || "";
@@ -115,8 +134,11 @@ export default {
         });
     },
     entitySelection(data) {
+      console.log("ddddd");
+      console.log(data);
       this.cashOutRecord.entity = data.id;
       this.cashOutRecord.expenceCategory = data.expense_category;
+      this.quantityUnit = data.quantity_unit;
     },
     modeSelection(data) {
       if (data === null || data === undefined) {
@@ -130,6 +152,8 @@ export default {
     addRow() {
       if (this.$refs.addEntryForm.validate()) {
         this.cashOutRecord.amount = this.enteredAmount;
+        this.cashOutRecord.quantity = this.enteredQuantity;
+        this.cashOutRecord.quantity_unit = this.quantityUnit;
         this.cashOutRecord.comment = this.enteredComment;
         this.cashOutRecord.date = this.settlementDate;
         this.cashOutRecord.settlement = this.settlementId;
@@ -186,10 +210,13 @@ export default {
     return {
       //settlementId: null,
       valid: true,
-      selectedCategory: "",
+      selectedEntryCategory: "",
       entitySelected: "",
       modeSelected: null,
       enteredAmount: null,
+      enteredQuantity: null,
+      quantityUnit: null,
+      quantityDisabled: true,
       enteredComment: null,
       entryCategoryOptions: [],
       entityOptions: [],
@@ -211,6 +238,7 @@ export default {
         },
         { text: "Entity", value: "entity", align: "center", sortable: false },
         { text: "Amount", value: "amount", align: "center", sortable: false },
+        { text: "Quantity", value: "quantity", align: "center", sortable: false },
         {
           text: "Comment",
           value: "comment",
