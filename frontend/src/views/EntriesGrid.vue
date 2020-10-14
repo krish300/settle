@@ -136,8 +136,6 @@ export default {
         });
     },
     entitySelection(data) {
-      console.log("ddddd");
-      console.log(data);
       this.cashOutRecord.entity = data.id;
       this.cashOutRecord.expenceCategory = data.expense_category;
       this.quantityUnit = data.quantity_unit;
