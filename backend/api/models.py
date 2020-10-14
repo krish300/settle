@@ -34,6 +34,7 @@ class Entity(models.Model):
         'EntityType', on_delete=models.PROTECT)
     category = models.ForeignKey(
         'ExpenseCategory', on_delete=models.SET_NULL, null=True, blank=True)
+    quantity_unit = models.CharField(max_length=10, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -82,6 +83,8 @@ class Entry(models.Model):
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
     amount = models.PositiveIntegerField(null=False, blank=False)
+    quantity = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
+    quantity_unit = models.CharField(max_length=10, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=50, null=True)
     last_modified = models.DateTimeField(auto_now=True)

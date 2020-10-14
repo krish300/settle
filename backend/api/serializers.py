@@ -8,7 +8,7 @@ class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Entity
-        fields = ('id', 'name', 'type', 'expense_category', 'category')
+        fields = ('id', 'name', 'type', 'expense_category', 'category', 'quantity_unit')
 
 
 class EntityTypeSerializer(serializers.ModelSerializer):
