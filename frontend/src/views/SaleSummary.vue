@@ -72,6 +72,7 @@
                                           <td class="pay-app-value-td">
                                             <v-text-field
                                               type="number"
+                                              min="0"
                                               hide-details
                                               dense
                                               single-line
@@ -97,6 +98,7 @@
                                           <td class="pay-app-value-td">
                                             <v-text-field
                                               type="number"
+                                              min="0"
                                               hide-details
                                               dense
                                               single-line

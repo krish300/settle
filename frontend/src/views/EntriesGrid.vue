@@ -44,6 +44,7 @@
         <v-col cols="1">
           <v-text-field
             type="number"
+            min="0"
             v-model="enteredAmount"
             :rules="[v => !!v || 'Amount  is required']"
             label="Amount"
@@ -54,6 +55,7 @@
         <v-col cols="1">
           <v-text-field
             type="number"
+            min="0"
             v-model="enteredQuantity"
             :rules="[(v => !!v || quantityDisabled) || 'Quantity  is required']"
             label="Quantity"
