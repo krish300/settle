@@ -1,5 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -61,3 +61,14 @@ class PaymentModeViewSet(Base, ReadOnlyModelViewSet):
     queryset = models.PaymentMode.objects.all()
     serializer_class = serializers.PaymentModeSerializer
     filter_fields = ('display_in',)
+
+
+class AppConfigViewSet(ViewSet):
+
+    def list(self, request, format=None):
+        headers = {}
+        conf ={}
+        app_config = models.AppConfig.objects.all()
+        for row in app_config:
+            conf[row.prop] = row.value
+        return Response(conf, headers=headers, status=200)

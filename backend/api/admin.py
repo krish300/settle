@@ -83,3 +83,7 @@ class PaymentModeCategory(admin.ModelAdmin):
 @admin.register(models.PaymentMode)
 class PaymentMode(admin.ModelAdmin):
     pass
+
+@admin.register(models.AppConfig)
+class AppConfig(admin.ModelAdmin):
+    pass

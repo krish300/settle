@@ -83,7 +83,8 @@ class Entry(models.Model):
         max_length=2, choices=MODE_CHOICES, default=DEFAULT_MODE)
     comment = models.CharField(max_length=100, blank=True, null=True)
     amount = models.PositiveIntegerField(null=False, blank=False)
-    quantity = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
+    quantity = models.DecimalField(
+        null=True, blank=True, max_digits=7, decimal_places=2)
     quantity_unit = models.CharField(max_length=10, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=50, null=True)
@@ -161,3 +162,14 @@ class PaymentMode(models.Model):
 
     def __str__(self):
         return self.display_name
+
+
+class AppConfig(models.Model):
+    prop = models.CharField(max_length=100, unique=True)
+    value = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.prop
