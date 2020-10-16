@@ -24,6 +24,14 @@ export default {
       .catch(error => {
         console.log("error while fetching new settlement info", error);
       });
+    axios
+      .get(`${process.env.VUE_APP_SERVER_URL}/api/config/`)
+      .then(response => {
+        this.$store.commit("setAppConfig", response.data);
+      })
+      .catch(error => {
+        console.log("error while fetching app config", error);
+      });
   }
 };
 </script>

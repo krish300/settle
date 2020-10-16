@@ -16,9 +16,13 @@ export default new Vuex.Store({
     settlementName: "NA",
     totalCashExpense: 0,
     totalExpense: 0,
-    currentUserInfo: {}
+    currentUserInfo: {},
+    appConfig: {}
   },
   mutations: {
+    setAppConfig(state, appConfig) {
+      state.appConfig = appConfig;
+    },
     setInitState(state, settlementInfo) {
       state.settlementDate = settlementInfo.date;
       state.settlementId = settlementInfo.id;
@@ -59,6 +63,9 @@ export default new Vuex.Store({
         return true;
       }
       return false;
+    },
+    getAppConfig(state) {
+      return state.appConfig;
     }
   },
   actions: {},
