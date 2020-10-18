@@ -17,7 +17,9 @@ export default new Vuex.Store({
     totalCashExpense: 0,
     totalExpense: 0,
     currentUserInfo: {},
-    appConfig: {}
+    appConfig: {},
+    openingCash: 0,
+    closingCash: 0
   },
   mutations: {
     setAppConfig(state, appConfig) {
@@ -29,6 +31,8 @@ export default new Vuex.Store({
       state.settlementName = settlementInfo.name;
       state.totalCashExpense = settlementInfo.cash_expense;
       state.totalExpense = settlementInfo.expense;
+      state.openingCash = settlementInfo.opening_cash;
+      state.closingCash = settlementInfo.closing_cash;
     },
     setCurrentUserInfo(state, d) {
       state.currentUserInfo = d;
@@ -42,6 +46,12 @@ export default new Vuex.Store({
     setSettlementDate(state, dt) {
       state.settlementDate = dt;
     },
+    // setOpeningCash(state, amt) {
+    //   state.openingCash = amt;
+    // },
+    setClosingCash(state, amt) {
+      state.closingCash = amt;
+    },
     resetState(state) {
       state.settlementDate = "00-00-0000";
       state.settlementId = "";
@@ -49,6 +59,8 @@ export default new Vuex.Store({
       state.totalCashExpense = 0;
       state.totalExpense = 0;
       state.currentUserInfo = {};
+      state.openingCash = 0;
+      state.closingCash = 0;
     }
   },
   getters: {

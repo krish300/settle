@@ -46,7 +46,10 @@
                       </v-col>
                     </v-row>
                     <!--each tr to hold payment apps and respective info of each category -->
-                    <tr v-for="ctgryData in processedTableLayoutData" :key="ctgryData.nm">
+                    <tr
+                      v-for="ctgryData in deriveRefernceAttributes(processedTableLayoutData)"
+                      :key="ctgryData.nm"
+                    >
                       <v-simple-table dense>
                         <template v-slot:default>
                           <!-- <th dense>{{ ctgryData.nm }}</th>
@@ -76,7 +79,12 @@
                                               hide-details
                                               dense
                                               single-line
-                                              :ref="'Sft-' + payApp.name + '-Value'"
+                                              :ref="displayedOrderRefs.Sft[payApp.name].ref"
+                                              @keydown.enter="
+                                                changeFocusToNextCell(
+                                                  displayedOrderRefs.Sft[payApp.name].nextRef
+                                                )
+                                              "
                                               v-model.number="softwareSaleData[payApp.name]"
                                             ></v-text-field>
                                           </td>
@@ -96,13 +104,20 @@
                                             {{ payApp.display_name }}
                                           </td>
                                           <td class="pay-app-value-td">
+                                            <!-- readonly for cash value of Cashier -->
                                             <v-text-field
                                               type="number"
                                               min="0"
                                               hide-details
                                               dense
                                               single-line
-                                              :ref="'Mgr-' + payApp.name + '-Value'"
+                                              :readonly="payApp.name === 'Cash'"
+                                              :ref="displayedOrderRefs.Mgr[payApp.name].ref"
+                                              @keydown.enter="
+                                                changeFocusToNextCell(
+                                                  displayedOrderRefs.Mgr[payApp.name].nextRef
+                                                )
+                                              "
                                               v-model.number="managerSaleData[payApp.name]"
                                             ></v-text-field>
                                           </td>
@@ -159,9 +174,7 @@
                           <v-row class="totals-bar">
                             <v-col :cols="5"> Total: {{ softwareSale }} </v-col>
                             <v-col :cols="5"> Total: {{ managerSale }} </v-col>
-                            <v-col :cols="1">
-                              {{ saleDiff }}
-                            </v-col>
+                            <v-col :cols="1"> {{ saleDiff }} </v-col>
                           </v-row>
                         </v-sheet>
                       </v-col>
@@ -196,6 +209,10 @@
                       <tr>
                         <td>Opening Cash:</td>
                         <td>{{ openingCash }}</td>
+                      </tr>
+                      <tr>
+                        <td>Todays Cash Expenses:</td>
+                        <td>{{ totalCashExpense }}</td>
                       </tr>
                       <tr>
                         <td>Closing Cash:</td>
@@ -339,7 +356,15 @@ export default {
         .then(response => {
           this.successMessage = "Settlement Deleted!";
           this.sucessAlert = true;
-          router.push({ path: "home" });
+          axios
+            .get(`${process.env.VUE_APP_SERVER_URL}/api/settlement/latest/`)
+            .then(response => {
+              this.$store.commit("setInitState", response.data);
+              router.push({ path: "/" });
+            })
+            .catch(error => {
+              console.log("error while fetching new settlement info", error);
+            });
         })
         .catch(error => {
           this.errorMessage = "error while deleting the Settlement please call admin.";
@@ -394,8 +419,39 @@ export default {
     onCashUpdate(d) {
       this.cashCalcDialog = false;
       if (d != null) {
-        this.closingCash = d;
+        this.$store.commit("setClosingCash", d);
       }
+    },
+    appendToDisplayedOrderRefs(colType, appName, cellRefName, nextRefName) {
+      this.displayedOrderRefs[colType][appName] = {
+        ref: cellRefName,
+        nextRef: nextRefName
+      };
+    },
+    changeFocusToNextCell(nextCellRef) {
+      this.$refs[nextCellRef][0].focus();
+    },
+    // fetching refernces of text feilds and getting the order in which they are rendered on UI
+    // only need of this code is to add excel like functionality, next cell on ENTER key press
+    // messy
+    deriveRefernceAttributes(fullTableData) {
+      let sftData = [];
+      let mgrData = [];
+      for (let eachCategoryData of Object.values(fullTableData)) {
+        sftData = sftData.concat(eachCategoryData.Sft);
+        mgrData = mgrData.concat(eachCategoryData.Mgr);
+      }
+      for (let [index, appInfo] of sftData.entries()) {
+        let refName = "Sft-" + appInfo.name + "-ref";
+        let nextRefName = "Sft-" + (sftData[index + 1] || sftData[0]).name + "-ref";
+        this.appendToDisplayedOrderRefs("Sft", appInfo.name, refName, nextRefName);
+      }
+      for (let [index, appInfo] of mgrData.entries()) {
+        let refName = "Mgr-" + appInfo.name + "-ref";
+        let nextRefName = "Mgr-" + (mgrData[index + 1] || mgrData[0]).name + "-ref";
+        this.appendToDisplayedOrderRefs("Mgr", appInfo.name, refName, nextRefName);
+      }
+      return fullTableData;
     }
   },
   data() {
@@ -408,15 +464,14 @@ export default {
       softwareSale: 0,
       managerSale: 0,
       discount: 0,
-      closingCash: 0,
-      openingCash: 0,
       cashCalcDialog: false,
       errorMessage: "",
       errAlert: false,
       successMessage: "",
       sucessAlert: false,
       deleteAlert: false,
-      settlementClosed: false
+      settlementClosed: false,
+      displayedOrderRefs: { Sft: {}, Mgr: {} }
     };
   },
   created() {
@@ -446,22 +501,6 @@ export default {
       .catch(error => {
         console.log("error while fetching available payment modes", error);
       });
-
-    axios
-      .get(`${process.env.VUE_APP_SERVER_URL}/api/settlement/${this.settlementId}/`)
-      .then(response => {
-        this.openingCash = response.data.opening_cash;
-        this.closingCash = response.data.closing_cash;
-      })
-      .catch(error => {
-        console.log("error while fetching settlment data", error);
-      });
-  },
-  mounted() {
-    setTimeout(() => {
-      // executed after render + 2sec to make manager cash readonly
-      //this.$refs["Mgr-Cash-Value"][0].readonly = true;
-    }, 2000);
   },
   computed: {
     ...mapState([
@@ -470,23 +509,27 @@ export default {
       "totalCashExpense",
       "totalExpense",
       "settlementDate",
-      "settlementName"
+      "settlementName",
+      "closingCash",
+      "openingCash"
     ]),
-    ...mapGetters(["currentUserName"]),
+    ...mapGetters(["currentUserName", "getAppConfig"]),
     saleDiff() {
-      return this.softwareSale - this.managerSale;
+      return this.managerSale - this.softwareSale;
     },
     closeButtonDisabled() {
-      // verify if cash sale/expense/opening cash is matching
+      let acceptableSaleDiff = Number(this.getAppConfig["settlement-difference-allowed"]);
       if (
-        this.closingCash + this.totalCashExpense - this.openingCash ===
-        this.managerSaleData.Cash
+        (this.saleDiff == 0 || this.saleDiff >= -acceptableSaleDiff) &&
+        this.softwareSale != 0 &&
+        this.managerSale != 0
       ) {
-        if (this.saleDiff == 0) {
-          return false;
-        }
+        return false;
       }
       return true;
+    },
+    computedCashSale() {
+      return this.closingCash + this.totalCashExpense - this.openingCash;
     }
   },
   watch: {
@@ -516,6 +559,12 @@ export default {
               console.log("error while fetching new settlement info", error);
             });
         }
+      }
+    },
+    computedCashSale: {
+      immediate: true,
+      handler(computedCashSale) {
+        this.managerSaleData.Cash = computedCashSale;
       }
     }
   }
