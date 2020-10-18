@@ -69,7 +69,7 @@
       </v-dialog>
     </v-app-bar>
     <!-- Sizes your content based upon application components -->
-    <v-content style="padding-top:0px;">
+    <v-main style="padding-top:0px;">
       <!-- Provides the application the proper gutter -->
       <v-container fluid dense>
         <!-- <EntriesGrid /> -->
@@ -77,7 +77,7 @@
         <!-- If using vue-router -->
         <!-- <router-view /> -->
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

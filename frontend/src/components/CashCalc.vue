@@ -20,6 +20,7 @@
                 <td width="15">
                   <v-text-field
                     type="number"
+                    min="0"
                     hide-details
                     dense
                     single-line

@@ -8,11 +8,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/manifest.json"
   },
   {
-    "revision": "29de52d9edb64840c30d",
+    "revision": "f5231629a6227f91da07",
     "url": "/static/css/app.css"
   },
   {
-    "revision": "05eabe4a0a55555ce9c0",
+    "revision": "71182d1db47c9b497021",
     "url": "/static/css/chunk-vendors.css"
   },
   {
@@ -32,11 +32,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/fonts/MaterialIcons-Regular.woff2"
   },
   {
-    "revision": "29de52d9edb64840c30d",
+    "revision": "f5231629a6227f91da07",
     "url": "/static/js/app.js"
   },
   {
-    "revision": "05eabe4a0a55555ce9c0",
+    "revision": "71182d1db47c9b497021",
     "url": "/static/js/chunk-vendors.js"
   }
 ]);
