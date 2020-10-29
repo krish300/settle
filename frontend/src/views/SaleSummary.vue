@@ -292,8 +292,10 @@ export default {
       // sale summary
       let salePostData = {
         date: this.settlementDate,
-        software_data: JSON.stringify(this.softwareSaleData),
-        manager_data: JSON.stringify(this.managerSaleData),
+        software_data: this.softwareSaleData,
+        manager_data: this.managerSaleData,
+        // software_data: JSON.stringify(this.softwareSaleData),
+        // manager_data: JSON.stringify(this.managerSaleData),
         software_sale: this.softwareSale,
         manager_sale: this.managerSale,
         software_discount: this.discount,
@@ -485,8 +487,10 @@ export default {
           )
           .then(response => {
             if (response.data.length > 0) {
-              this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
-              this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
+              this.softwareSaleData = JSON.parse(response.data[0].software_data);
+              this.managerSaleData = JSON.parse(response.data[0].manager_data);
+              // this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
+              // this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
               this.softwareSale = response.data[0].software_sale;
               this.managerSale = response.data[0].manager_sale;
               this.discount = response.data[0].software_discount;

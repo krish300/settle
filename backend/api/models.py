@@ -1,7 +1,5 @@
 import uuid
-
 from django.db import models
-from jsonfield import JSONField
 
 
 class EntityType(models.Model):
@@ -120,8 +118,8 @@ class SaleSummary(models.Model):
         get_latest_by = '-date'
     settlement = models.OneToOneField("Settlement", on_delete=models.CASCADE)
     date = models.DateField(unique=True)
-    software_data = JSONField(null=True)
-    manager_data = JSONField(null=True)
+    software_data = models.JSONField(null=True)
+    manager_data = models.JSONField(null=True)
     software_sale = models.PositiveIntegerField(null=False, blank=False)
     manager_sale = models.PositiveIntegerField(null=False, blank=False)
     software_discount = models.PositiveIntegerField(null=False, blank=False)
@@ -166,10 +164,10 @@ class PaymentMode(models.Model):
 
 class AppConfig(models.Model):
     prop = models.CharField(max_length=100, unique=True)
-    value = models.CharField(max_length=100, unique=True)
+    value = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.prop
+        return f"{self.prop} -> {self.value}"

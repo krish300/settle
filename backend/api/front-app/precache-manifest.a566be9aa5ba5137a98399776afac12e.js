@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/manifest.json"
   },
   {
-    "revision": "f5231629a6227f91da07",
+    "revision": "d14e32e895a9bf6760bf",
     "url": "/static/css/app.css"
   },
   {
@@ -32,7 +32,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/fonts/MaterialIcons-Regular.woff2"
   },
   {
-    "revision": "f5231629a6227f91da07",
+    "revision": "d14e32e895a9bf6760bf",
     "url": "/static/js/app.js"
   },
   {
