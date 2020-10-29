@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 
 @receiver([post_save, post_delete], sender=Entry)
-def update_settlement(sender, instance, **info):
+def update_settlement_on_entry_change(sender, instance, **info):
     settlement = Settlement.objects.get(id=instance.settlement_id)
     # only for debit entry
     if instance.type == 'DE':
@@ -22,8 +22,11 @@ def update_settlement(sender, instance, **info):
 
 @receiver(post_save, sender=Settlement)
 def on_settlement_update(sender, instance, **info):
+    last_settlement = Settlement.objects.earliest()
     # only for updated and NOT created
-    if info.get('created') == False:
+    # also create a new settlement only if
+    # the one being closed is the last one
+    if (info.get('created') == False and (last_settlement.date == instance.date)):
         # on model close
         if instance.is_closed:
             create_new_settlement()
@@ -31,7 +34,11 @@ def on_settlement_update(sender, instance, **info):
 
 @receiver(post_delete, sender=Settlement)
 def on_settlement_delete(sender, instance, **info):
-    create_new_settlement()
+    last_settlement = Settlement.objects.earliest()
+    # create a new settlement only if
+    # the one deleted is the last one
+    if (last_settlement.date + timedelta(days=1)) == instance.date:
+        create_new_settlement()
 
 
 def create_new_settlement():
