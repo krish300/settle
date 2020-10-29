@@ -21,7 +21,7 @@
           </v-row>
         </v-alert>
         <v-row>
-          <v-col :cols="7">
+          <v-col :cols="7" ref="sale-summary">
             <div class="PaymentAppsLayout">
               <v-simple-table>
                 <template v-slot:default>
@@ -185,6 +185,7 @@
             </div>
           </v-col>
           <!-- <v-col :cols="1"></v-col> -->
+          <!-- right column for opening, closing cash, buttons -->
           <v-col :cols="4">
             <v-container class="fill-height" fluid>
               <v-row>
@@ -245,6 +246,11 @@
                       <tr>
                         <v-btn block large color="error" @click="deleteAlert = true">DELETE</v-btn>
                       </tr>
+                      <tr v-show="getAppConfig['download-buttons-enabled'] == 'true'">
+                        <v-icon large color="green darken-2" @click="downloadSaleSummaryImage">
+                          mdi-arrow-down-box
+                        </v-icon>
+                      </tr>
                     </tbody>
                   </template>
                 </v-simple-table>
@@ -262,6 +268,8 @@ import CashCalc from "@/components/CashCalc.vue";
 import router from "../router";
 import { mapState, mapGetters } from "vuex";
 import axios from "axios";
+import * as htmlToImage from "html-to-image";
+import * as download from "downloadjs";
 export default {
   name: "SaleSummary",
   components: {
@@ -454,6 +462,19 @@ export default {
         this.appendToDisplayedOrderRefs("Mgr", appInfo.name, refName, nextRefName);
       }
       return fullTableData;
+    },
+    downloadSaleSummaryImage() {
+      console.log(this.getAppConfig);
+      let ele = this.$refs["sale-summary"];
+      let dt = this.settlementDate;
+      htmlToImage
+        .toPng(ele)
+        .then(function(dataUrl) {
+          download(dataUrl, `${dt}-SaleSummary.png`);
+        })
+        .catch(function(error) {
+          console.error("oops, something went wrong!", error);
+        });
     }
   },
   data() {
