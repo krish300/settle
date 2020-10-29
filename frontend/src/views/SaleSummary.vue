@@ -487,8 +487,8 @@ export default {
           )
           .then(response => {
             if (response.data.length > 0) {
-              this.softwareSaleData = JSON.parse(response.data[0].software_data);
-              this.managerSaleData = JSON.parse(response.data[0].manager_data);
+              this.softwareSaleData = response.data[0].software_data;
+              this.managerSaleData = response.data[0].manager_data;
               // this.softwareSaleData = JSON.parse(response.data[0].software_data.replace(/'/g, '"'));
               // this.managerSaleData = JSON.parse(response.data[0].manager_data.replace(/'/g, '"'));
               this.softwareSale = response.data[0].software_sale;
