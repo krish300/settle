@@ -87,3 +87,7 @@ class PaymentMode(admin.ModelAdmin):
 @admin.register(models.AppConfig)
 class AppConfig(admin.ModelAdmin):
     pass
+
+@admin.register(models.Entry)
+class Entry(admin.ModelAdmin):
+    pass
