@@ -11,11 +11,10 @@ autopep8 = "*"
 django = "*"
 peewee = "*"
 gunicorn = "*"
-whitenoise = {extras = ["brotli"],version = "*"}
+whitenoise = "*"
 djangorestframework = "*"
 django-filter = "*"
-jsonfield = "*"
 django-cors-headers = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
