@@ -156,7 +156,7 @@ class PaymentMode(models.Model):
     display_name = models.CharField(max_length=50, unique=True)
     display_in = models.CharField(max_length=10, choices=ENTRY_TYPE_CHOICES)
     category = models.ForeignKey(
-        "PaymentModeCategory", on_delete=models.PROTECT, null=True)
+        "PaymentModeCategory", on_delete=models.PROTECT, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
