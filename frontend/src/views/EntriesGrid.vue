@@ -79,32 +79,41 @@
         </v-col>
       </v-row>
     </v-form>
-
-    <v-data-table :headers="headers" :items="cashOutRecords" item-key="id" dense>
-      <template v-slot:item="row">
-        <tr>
-          <td>{{ row.item.expense_category }}</td>
-          <td>{{ row.item.entity_name }}</td>
-          <td>{{ row.item.amount }}</td>
-          <td>{{ row.item.quantity }} {{ row.item.quantity_unit }}</td>
-          <td>{{ row.item.comment }}</td>
-          <td>
-            <v-icon small color="red" dense @click="deleteItem(row.item)"> delete </v-icon>
-          </td>
-        </tr>
-      </template>
-    </v-data-table>
-    <v-row dense>
-      <v-col class="text-center"></v-col>
-      <v-col class="text-center"
-        ><v-card color="teal lighten-1">Total Cash Expenses: {{ this.totalCashExpense }} </v-card>
-      </v-col>
-      <v-col class="text-center">Total Expenses: {{ this.totalExpense }} </v-col>
-    </v-row>
+    <div ref="EntriesGridRef">
+      <v-data-table :headers="headers" :items="cashOutRecords" item-key="id" dense>
+        <template v-slot:item="row">
+          <tr>
+            <td>{{ row.item.expense_category }}</td>
+            <td>{{ row.item.entity_name }}</td>
+            <td>{{ row.item.amount }}</td>
+            <td>{{ row.item.quantity }} {{ row.item.quantity_unit }}</td>
+            <td>{{ row.item.comment }}</td>
+            <td>
+              <v-icon small color="red" dense @click="deleteItem(row.item)"> delete </v-icon>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+      <v-row dense>
+        <v-col class="text-center"></v-col>
+        <v-col class="text-center"
+          ><v-card color="teal lighten-1">Total Cash Expenses: {{ this.totalCashExpense }} </v-card>
+        </v-col>
+        <v-col class="text-center">Total Expenses: {{ this.totalExpense }} </v-col>
+        <v-col v-show="getAppConfig['download-buttons-enabled'] == 'true'">
+          <v-icon large color="green darken-2" @click="downloadEntiresGridImage">
+            mdi-arrow-down-box
+          </v-icon>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 <script>
 import axios from "axios";
+import * as htmlToImage from "html-to-image";
+import * as download from "downloadjs";
+// import toJpeg from "html-to-image";
 import { mapState, mapGetters, Store } from "vuex";
 export default {
   name: "EntriesGrid",
@@ -204,6 +213,18 @@ export default {
         .catch(error => {
           console.log("error while fetching settlment data", error);
         });
+    },
+    downloadEntiresGridImage() {
+      let ele = this.$refs["EntriesGridRef"];
+      let dt = this.settlementDate;
+      htmlToImage
+        .toPng(ele)
+        .then(function(dataUrl) {
+          download(dataUrl, `${dt}-Expenses.png`);
+        })
+        .catch(function(error) {
+          console.error("oops, something went wrong!", error);
+        });
     }
   },
   data() {
@@ -289,7 +310,7 @@ export default {
       "currentUserName",
       "settlementDate"
     ]),
-    ...mapGetters(["currentUserName", "isAdmin"])
+    ...mapGetters(["currentUserName", "isAdmin", "getAppConfig"])
   }
 };
 </script>
