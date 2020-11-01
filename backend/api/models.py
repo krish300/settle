@@ -167,7 +167,8 @@ class PaymentMode(models.Model):
 
 class AppConfig(models.Model):
     prop = models.CharField(max_length=100, unique=True)
-    value = models.CharField(max_length=100)
+    value = models.JSONField()
+    additional_info = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
