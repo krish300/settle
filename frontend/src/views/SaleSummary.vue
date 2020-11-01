@@ -73,12 +73,14 @@
                                             {{ payApp.display_name }}
                                           </td>
                                           <td class="pay-app-value-td">
+                                            <!-- make manager sale readonly by default -->
                                             <v-text-field
                                               type="number"
                                               min="0"
                                               hide-details
                                               dense
                                               single-line
+                                              :readonly="softwareSaleReadonly"
                                               :ref="displayedOrderRefs.Sft[payApp.name].ref"
                                               @keydown.enter="
                                                 changeFocusToNextCell(
@@ -249,6 +251,9 @@
                       <tr v-show="getAppConfig['download-buttons-enabled'] == 'true'">
                         <v-icon large color="green darken-2" @click="downloadSaleSummaryImage">
                           mdi-arrow-down-box
+                        </v-icon>
+                        <v-icon large color="green darken-2" @click="getPosIstSaleSummary">
+                          mdi-table-sync
                         </v-icon>
                       </tr>
                     </tbody>
@@ -463,6 +468,21 @@ export default {
       }
       return fullTableData;
     },
+    getPosIstSaleSummary() {
+      axios
+        .get(
+          `${process.env.VUE_APP_SERVER_URL}/api/posist/get_posist_sale/?settlemment_date=${this.settlementDate}`
+        )
+        .then(response => {
+          for (const [appNm, sale] of Object.entries(response.data)) {
+            this.$set(this.softwareSaleData, appNm, sale);
+          }
+        })
+        .catch(error => {
+          console.log("error", error.response.data);
+          console.error("oops, something went wrong!", error);
+        });
+    },
     downloadSaleSummaryImage() {
       console.log(this.getAppConfig);
       let ele = this.$refs["sale-summary"];
@@ -494,7 +514,8 @@ export default {
       sucessAlert: false,
       deleteAlert: false,
       settlementClosed: false,
-      displayedOrderRefs: { Sft: {}, Mgr: {} }
+      displayedOrderRefs: { Sft: {}, Mgr: {} },
+      softwareSaleReadonly: true
     };
   },
   created() {
@@ -572,6 +593,7 @@ export default {
       }
     },
     settlementClosed: {
+      immediate: true,
       handler() {
         if (this.settlementClosed) {
           axios
