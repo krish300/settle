@@ -9,7 +9,7 @@
     "deploy": "vue-cli-service build --dest ../backend/api/front-app"
   },
   "dependencies": {
-    "axios": "^0.21.2",
+    "axios": "^1.6.0",
     "core-js": "^3.6.5",
     "downloadjs": "^1.4.7",
     "html-to-image": "^0.1.1",
